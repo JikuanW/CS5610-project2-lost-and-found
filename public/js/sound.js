@@ -25,7 +25,7 @@ function beep(freq, durationSec) {
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
 
-  osc.type = "sine";
+  osc.type = "triangle";
   osc.frequency.value = freq;
 
   // Low volume
@@ -42,13 +42,12 @@ function beep(freq, durationSec) {
  * Success sound
  */
 export function playSuccess() {
-  beep(660, 0.08);
-  setTimeout(() => beep(880, 0.08), 90);
+  beep(880, 0.11);
 }
 
 /**
  * Error sound
  */
 export function playError() {
-  beep(220, 0.16);
+  beep(330, 0.13);
 }
