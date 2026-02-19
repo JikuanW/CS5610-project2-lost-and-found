@@ -6,7 +6,7 @@ const sessions = new Map();
 export function setSession(sessionId, userId, username) {
   sessions.set(sessionId, {
     userId: String(userId),
-    username: String(username)
+    username: String(username),
   });
 }
 

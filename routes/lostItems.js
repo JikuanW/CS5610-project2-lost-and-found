@@ -32,7 +32,7 @@ router.post("/", requireLogin, async (req, res) => {
     image: image || "",
     ownerUserId: req.user.userId,
     resolved: false,
-    createdAt: new Date()
+    createdAt: new Date(),
   };
 
   const result = await lostItems.insertOne(doc);
@@ -120,9 +120,9 @@ router.put("/:id", requireLogin, async (req, res) => {
         category,
         location,
         date,
-        image: image || ""
-      }
-    }
+        image: image || "",
+      },
+    },
   );
 
   return res.json({ ok: true });

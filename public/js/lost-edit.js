@@ -63,13 +63,13 @@ form.addEventListener("submit", async (e) => {
     category: form.elements.category.value,
     location: form.elements.location.value,
     date: form.elements.date.value,
-    image: form.elements.image.value
+    image: form.elements.image.value,
   };
 
   const resp = await fetch(`/api/lost-items/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   });
 
   const data = await resp.json();

@@ -1,4 +1,4 @@
-// Auth routes 
+// Auth routes
 
 import crypto from "crypto";
 import express from "express";
@@ -11,7 +11,10 @@ const router = express.Router();
  * Hash password with sha256 + salt
  */
 function hashPassword(password, salt) {
-  return crypto.createHash("sha256").update(password + salt).digest("hex");
+  return crypto
+    .createHash("sha256")
+    .update(password + salt)
+    .digest("hex");
 }
 
 /**
@@ -41,7 +44,7 @@ router.post("/register", async (req, res) => {
   const result = await users.insertOne({
     username,
     passwordHash,
-    salt
+    salt,
   });
 
   return res.json({ ok: true, userId: result.insertedId });
@@ -77,7 +80,7 @@ router.post("/login", async (req, res) => {
 
   // set cookie
   res.cookie("sid", sessionId, {
-    httpOnly: true
+    httpOnly: true,
   });
 
   return res.json({ ok: true });
@@ -109,7 +112,7 @@ router.get("/me", (req, res) => {
   return res.json({
     loggedIn: true,
     userId: session.userId,
-    username: session.username
+    username: session.username,
   });
 });
 
