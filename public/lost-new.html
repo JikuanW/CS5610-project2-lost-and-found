@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Lost Item</title>
+    <link rel="stylesheet" href="/css/base.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div id="nav"></div>
+
+      <div class="card" style="margin-top: 14px;">
+        <div class="card-body">
+          <h1 class="page-title">Create Lost Item</h1>
+          <p class="muted">Fill in details so others can help. Image must be a link (optional).</p>
+
+          <form id="lostForm" class="form">
+            <label class="label">
+              Title
+              <input class="input" name="title" required />
+            </label>
+
+            <label class="label">
+              Description
+              <textarea class="textarea" name="description" required></textarea>
+            </label>
+
+            <div class="row">
+              <label class="label" style="flex: 1;">
+                Category
+                <select class="input" name="category" required>
+                  <option value="" selected disabled>Select a category</option>
+                  <option>Electronics</option>
+                  <option>ID / Card</option>
+                  <option>Keys</option>
+                  <option>Wallet</option>
+                  <option>Clothing</option>
+                  <option>Books / Notes</option>
+                  <option>Accessories / Jewelry</option>
+                  <option>Bag / Backpack</option>
+                  <option>Water Bottle</option>
+                  <option>Other</option>
+                </select>
+              </label>
+
+              <label class="label" style="flex: 1;">
+                Location
+                <select class="input" name="location" required>
+                  <option value="" selected disabled>Select a location</option>
+                  <option>Library</option>
+                  <option>Classroom</option>
+                  <option>Lecture Hall</option>
+                  <option>Cafeteria</option>
+                  <option>Gym</option>
+                  <option>Dormitory</option>
+                  <option>Student Center</option>
+                  <option>Parking Lot</option>
+                  <option>Bus Stop</option>
+                  <option>Outdoor / Courtyard</option>
+                  <option>Other</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="row">
+              <label class="label" style="flex: 1;">
+                Date (MM/DD/YYYY)
+                <input
+                  class="input"
+                  name="date"
+                  type="text"
+                  placeholder="MM/DD/YYYY"
+                  pattern="\d{2}/\d{2}/\d{4}"
+                  title="Use MM/DD/YYYY, e.g. 02/18/2026"
+                  required
+                />
+              </label>
+
+              <label class="label" style="flex: 1;">
+                Image Link (optional)
+                <input class="input" name="image" placeholder="https://example.com/image.jpg" />
+              </label>
+            </div>
+
+            <div class="row">
+              <button class="btn btn-primary" type="submit">Create</button>
+              <a class="muted" href="/lost-my.html">Go to My Lost Items</a>
+            </div>
+          </form>
+
+          <div id="msg" class="alert" style="display: none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/js/nav.js"></script>
+    <script type="module" src="/js/lost-new.js"></script>
+  </body>
+</html>

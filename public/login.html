@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/base.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div id="nav"></div>
+
+      <div class="card" style="margin-top: 14px;">
+        <div class="card-body">
+          <h1 class="page-title">Login</h1>
+          <p class="muted">Login with your username.</p>
+
+          <form id="loginForm" class="form">
+            <label class="label">
+              Username
+              <input class="input" name="username" required />
+            </label>
+
+            <label class="label">
+              Password
+              <input class="input" name="password" type="password" required />
+            </label>
+
+            <div class="row">
+              <button class="btn btn-primary" type="submit">Login</button>
+              <button id="logoutBtn" class="btn" type="button">Logout</button>
+              <a class="muted" href="/register.html">No account? Register</a>
+            </div>
+          </form>
+
+          <div id="msg" class="alert" style="display: none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/js/nav.js"></script>
+    <script type="module" src="/js/login.js"></script>
+  </body>
+</html>

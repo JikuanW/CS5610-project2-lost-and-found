@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+    <link rel="stylesheet" href="/css/base.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div id="nav"></div>
+
+      <div class="card" style="margin-top: 14px;">
+        <div class="card-body">
+          <h1 class="page-title">Register</h1>
+          <p class="muted">Create a new account with a unique username.</p>
+
+          <form id="registerForm" class="form">
+            <label class="label">
+              Username
+              <input class="input" name="username" required />
+            </label>
+
+            <label class="label">
+              Password
+              <input class="input" name="password" type="password" required />
+            </label>
+
+            <div class="row">
+              <button class="btn btn-primary" type="submit">Register</button>
+              <a class="muted" href="/login.html">Already have an account? Login</a>
+            </div>
+          </form>
+
+          <div id="msg" class="alert" style="display: none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/js/nav.js"></script>
+    <script type="module" src="/js/register.js"></script>
+  </body>
+</html>
