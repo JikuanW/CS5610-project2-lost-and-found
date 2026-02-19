@@ -8,7 +8,7 @@
 https://northeastern.instructure.com/courses/245751
 
 ## Project Objective
-
+Build a campus Lost & Found web app where users can sign up/login and post lost or found items. Users can edit or delete their posts and use basic search/filter to find items. The app uses Node, Express, vanilla ES6 (client-side rendering), and MongoDB (Node driver), with basic accessibility support.
 
 ## Screenshot
 ![Screenshot](./images/screenshot.png)
