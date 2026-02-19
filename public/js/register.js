@@ -1,5 +1,7 @@
 // Register page logic
 
+import { playSuccess, playError } from "/js/sound.js";
+
 const form = document.getElementById("registerForm");
 const msg = document.getElementById("msg");
 
@@ -16,18 +18,25 @@ form.addEventListener("submit", async (e) => {
   const username = formData.get("username");
   const password = formData.get("password");
 
-  const resp = await fetch("/api/auth/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password }),
-  });
+  try {
+    const resp = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
 
-  const data = await resp.json();
+    const data = await resp.json();
 
-  if (resp.ok) {
-    showMsg("Registered. Go to login page.", true);
-    form.reset();
-  } else {
-    showMsg(data.error || "Register failed", false);
+    if (resp.ok) {
+      playSuccess();
+      showMsg("Registered. Go to login page.", true);
+      form.reset();
+    } else {
+      playError();
+      showMsg(data.error || "Register failed", false);
+    }
+  } catch {
+    playError();
+    showMsg("Network error", false);
   }
 });

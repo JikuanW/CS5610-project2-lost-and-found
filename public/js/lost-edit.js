@@ -1,5 +1,7 @@
 // Edit lost item
 
+import { playSuccess, playError } from "/js/sound.js";
+
 const msg = document.getElementById("msg");
 const form = document.getElementById("editForm");
 
@@ -13,29 +15,36 @@ const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
 if (!id) {
+  playError();
   showMsg("Missing id in URL.", false);
 } else {
   loadItem();
 }
 
 async function loadItem() {
-  const resp = await fetch(`/api/lost-items/${id}`);
-  const data = await resp.json();
+  try {
+    const resp = await fetch(`/api/lost-items/${id}`);
+    const data = await resp.json();
 
-  if (!resp.ok) {
-    showMsg(data.error || "Failed to load item", false);
-    return;
+    if (!resp.ok) {
+      playError();
+      showMsg(data.error || "Failed to load item", false);
+      return;
+    }
+
+    const item = data.item;
+
+    form.elements.title.value = item.title || "";
+    form.elements.description.value = item.description || "";
+    form.elements.image.value = item.image || "";
+    form.elements.date.value = item.date || "";
+
+    setSelectValueOrAddOption(form.elements.category, item.category || "");
+    setSelectValueOrAddOption(form.elements.location, item.location || "");
+  } catch {
+    playError();
+    showMsg("Network error", false);
   }
-
-  const item = data.item;
-
-  form.elements.title.value = item.title || "";
-  form.elements.description.value = item.description || "";
-  form.elements.image.value = item.image || "";
-  form.elements.date.value = item.date || "";
-
-  setSelectValueOrAddOption(form.elements.category, item.category || "");
-  setSelectValueOrAddOption(form.elements.location, item.location || "");
 }
 
 function setSelectValueOrAddOption(selectEl, value) {
@@ -66,17 +75,24 @@ form.addEventListener("submit", async (e) => {
     image: form.elements.image.value,
   };
 
-  const resp = await fetch(`/api/lost-items/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+  try {
+    const resp = await fetch(`/api/lost-items/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-  const data = await resp.json();
+    const data = await resp.json();
 
-  if (resp.ok) {
-    showMsg("Saved.", true);
-  } else {
-    showMsg(data.error || "Save failed", false);
+    if (resp.ok) {
+      playSuccess();
+      showMsg("Saved.", true);
+    } else {
+      playError();
+      showMsg(data.error || "Save failed", false);
+    }
+  } catch {
+    playError();
+    showMsg("Network error", false);
   }
 });

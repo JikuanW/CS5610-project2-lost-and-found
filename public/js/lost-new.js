@@ -1,5 +1,7 @@
 // Create lost item page logic
 
+import { playSuccess, playError } from "/js/sound.js";
+
 const form = document.getElementById("lostForm");
 const msg = document.getElementById("msg");
 
@@ -23,18 +25,25 @@ form.addEventListener("submit", async (e) => {
     image: formData.get("image"),
   };
 
-  const resp = await fetch("/api/lost-items", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+  try {
+    const resp = await fetch("/api/lost-items", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-  const data = await resp.json();
+    const data = await resp.json();
 
-  if (resp.ok) {
-    showMsg("Created lost item.", true);
-    form.reset();
-  } else {
-    showMsg(data.error || "Create failed", false);
+    if (resp.ok) {
+      playSuccess();
+      showMsg("Created lost item.", true);
+      form.reset();
+    } else {
+      playError();
+      showMsg(data.error || "Create failed", false);
+    }
+  } catch {
+    playError();
+    showMsg("Network error", false);
   }
 });

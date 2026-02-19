@@ -1,5 +1,7 @@
 // Shared navbar and login status
 
+import { playSuccess, playError } from "/js/sound.js";
+
 const navDiv = document.getElementById("nav");
 
 if (navDiv) {
@@ -47,8 +49,21 @@ async function renderNav() {
   const logoutBtn = document.getElementById("navLogoutBtn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
-      await fetch("/api/auth/logout", { method: "POST" });
-      window.location.reload();
+      try {
+        const resp = await fetch("/api/auth/logout", { method: "POST" });
+        const data = await resp.json();
+
+        if (resp.ok) {
+          playSuccess();
+          setTimeout(() => window.location.reload(), 120);
+        } else {
+          playError();
+          console.log(data.error || "Logout failed");
+        }
+      } catch {
+        playError();
+        console.log("Network error");
+      }
     });
   }
 }

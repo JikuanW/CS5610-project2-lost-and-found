@@ -1,5 +1,7 @@
 // Login/logout logic
 
+import { playSuccess, playError } from "/js/sound.js";
+
 const form = document.getElementById("loginForm");
 const logoutBtn = document.getElementById("logoutBtn");
 const msg = document.getElementById("msg");
@@ -17,28 +19,45 @@ form.addEventListener("submit", async (e) => {
   const username = formData.get("username");
   const password = formData.get("password");
 
-  const resp = await fetch("/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password }),
-  });
+  try {
+    const resp = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
 
-  const data = await resp.json();
+    const data = await resp.json();
 
-  if (resp.ok) {
-    window.location.href = "/lost-my.html?login=success";
-  } else {
-    showMsg(data.error || "Login failed", false);
+    if (resp.ok) {
+      playSuccess(); // success sound
+      // Small delay so the sound can start
+      setTimeout(() => {
+        window.location.href = "/lost-my.html?login=success";
+      }, 120);
+    } else {
+      playError(); // error sound
+      showMsg(data.error || "Login failed", false);
+    }
+  } catch {
+    playError(); // error sound
+    showMsg("Network error", false);
   }
 });
 
 logoutBtn.addEventListener("click", async () => {
-  const resp = await fetch("/api/auth/logout", { method: "POST" });
-  const data = await resp.json();
+  try {
+    const resp = await fetch("/api/auth/logout", { method: "POST" });
+    const data = await resp.json();
 
-  if (resp.ok) {
-    window.location.reload();
-  } else {
-    showMsg(data.error || "Logout failed", false);
+    if (resp.ok) {
+      playSuccess(); // success sound
+      setTimeout(() => window.location.reload(), 120);
+    } else {
+      playError(); // error sound
+      showMsg(data.error || "Logout failed", false);
+    }
+  } catch {
+    playError(); // error sound
+    showMsg("Network error", false);
   }
 });
