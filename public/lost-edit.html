@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -10,17 +10,17 @@
     <div class="container">
       <div id="nav"></div>
 
-      <div class="card" style="margin-top: 14px;">
+      <div class="card" style="margin-top: 14px">
         <div class="card-body">
           <div class="row">
-            <h1 class="page-title" style="margin: 0;">Edit Lost Item</h1>
+            <h1 class="page-title" style="margin: 0">Edit Lost Item</h1>
             <div class="spacer"></div>
             <a class="btn" href="/lost-my.html">Back</a>
           </div>
 
-          <div id="msg" class="alert" style="display: none;"></div>
+          <div id="msg" class="alert" style="display: none"></div>
 
-          <form id="editForm" class="form" style="margin-top: 12px;">
+          <form id="editForm" class="form" style="margin-top: 12px">
             <label class="label">
               Title
               <input class="input" name="title" required />
@@ -32,7 +32,7 @@
             </label>
 
             <div class="row">
-              <label class="label" style="flex: 1;">
+              <label class="label" style="flex: 1">
                 Category
                 <select class="input" name="category" required>
                   <option value="" disabled>Select a category</option>
@@ -49,7 +49,7 @@
                 </select>
               </label>
 
-              <label class="label" style="flex: 1;">
+              <label class="label" style="flex: 1">
                 Location
                 <select class="input" name="location" required>
                   <option value="" disabled>Select a location</option>
@@ -69,7 +69,7 @@
             </div>
 
             <div class="row">
-              <label class="label" style="flex: 1;">
+              <label class="label" style="flex: 1">
                 Date (MM/DD/YYYY)
                 <input
                   class="input"
@@ -82,9 +82,13 @@
                 />
               </label>
 
-              <label class="label" style="flex: 1;">
+              <label class="label" style="flex: 1">
                 Image Link (optional)
-                <input class="input" name="image" placeholder="https://example.com/image.jpg" />
+                <input
+                  class="input"
+                  name="image"
+                  placeholder="https://example.com/image.jpg"
+                />
               </label>
             </div>
 

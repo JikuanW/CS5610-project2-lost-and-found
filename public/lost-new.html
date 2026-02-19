@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -10,10 +10,12 @@
     <div class="container">
       <div id="nav"></div>
 
-      <div class="card" style="margin-top: 14px;">
+      <div class="card" style="margin-top: 14px">
         <div class="card-body">
           <h1 class="page-title">Create Lost Item</h1>
-          <p class="muted">Fill in details so others can help. Image must be a link (optional).</p>
+          <p class="muted">
+            Fill in details so others can help. Image must be a link (optional).
+          </p>
 
           <form id="lostForm" class="form">
             <label class="label">
@@ -27,7 +29,7 @@
             </label>
 
             <div class="row">
-              <label class="label" style="flex: 1;">
+              <label class="label" style="flex: 1">
                 Category
                 <select class="input" name="category" required>
                   <option value="" selected disabled>Select a category</option>
@@ -44,7 +46,7 @@
                 </select>
               </label>
 
-              <label class="label" style="flex: 1;">
+              <label class="label" style="flex: 1">
                 Location
                 <select class="input" name="location" required>
                   <option value="" selected disabled>Select a location</option>
@@ -64,7 +66,7 @@
             </div>
 
             <div class="row">
-              <label class="label" style="flex: 1;">
+              <label class="label" style="flex: 1">
                 Date (MM/DD/YYYY)
                 <input
                   class="input"
@@ -77,9 +79,13 @@
                 />
               </label>
 
-              <label class="label" style="flex: 1;">
+              <label class="label" style="flex: 1">
                 Image Link (optional)
-                <input class="input" name="image" placeholder="https://example.com/image.jpg" />
+                <input
+                  class="input"
+                  name="image"
+                  placeholder="https://example.com/image.jpg"
+                />
               </label>
             </div>
 
@@ -89,7 +95,7 @@
             </div>
           </form>
 
-          <div id="msg" class="alert" style="display: none;"></div>
+          <div id="msg" class="alert" style="display: none"></div>
         </div>
       </div>
     </div>
