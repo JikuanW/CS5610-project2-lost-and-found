@@ -47,3 +47,9 @@ node server.js
 ### 4 Open pages in browser
 
 http://localhost:3000
+
+### Generate Sample Data
+
+```bash
+node seed.js
+```
