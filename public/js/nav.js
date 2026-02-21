@@ -47,7 +47,7 @@ async function renderNav() {
           <span class="muted">•</span> 
           <a href="/lost-my.html">My Lost</a>
           <span class="muted">•</span> 
-          <a href="/found-my.html">Admin</a>
+          ${me.role === "admin" ? `<a href="/admin.html">Admin</a>` : ""}
         </div>
       </div>
     </div>
@@ -80,7 +80,8 @@ async function renderNav() {
 async function fetchMe() {
   const resp = await fetch("/api/auth/me");
   const data = await resp.json();
-  if (!resp.ok) return { loggedIn: false, username: "" };
+  // if (!resp.ok) return { loggedIn: false, username: "" }; Commented out breifly to test admin role
+  if (!resp.ok) return { loggedIn: false, username: "", role: "" };
   return data;
 }
 
