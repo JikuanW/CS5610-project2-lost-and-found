@@ -47,7 +47,7 @@ async function renderNav() {
           <span class="muted">•</span> 
           <a href="/lost-my.html">My Lost</a>
           <span class="muted">•</span> 
-          <a href="/lost-my.html">My Claims</a>
+          <a href="/claims.html">My Claims</a>
           ${me.role === "admin"
             ? `<span class="muted">•</span>
                <a href="/admin.html">Admin</a>`
