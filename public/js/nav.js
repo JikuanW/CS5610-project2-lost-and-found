@@ -158,7 +158,7 @@ async function renderNav() {
       <a href="/index.html" class="topnav-logo">Lost<span>&</span>Found</a>
 
       <div class="topnav-links">
-        <a href="/found-browse.html">Browse Found</a>
+        <a href="/found-browse.html">Browse Items</a>
         <a href="/lost-new.html">Report Lost</a>
         <a href="/found-new.html">Post Found</a>
         <a href="/claims.html">
