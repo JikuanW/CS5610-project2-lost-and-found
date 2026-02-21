@@ -8,7 +8,7 @@ if (navDiv) {
   renderNav();
 }
 
-// Render the navbar based on login status and wire up logout.
+// Builds the navigation bar based on whether the user is logged in.
 async function renderNav() {
   const me = await fetchMe();
 
@@ -49,6 +49,7 @@ async function renderNav() {
 
   const logoutBtn = document.getElementById("navLogoutBtn");
   if (logoutBtn) {
+    // When the user clicks Logout in the navbar, log out on the server and reload the page.
     logoutBtn.addEventListener("click", async () => {
       try {
         const resp = await fetch("/api/auth/logout", { method: "POST" });
@@ -69,7 +70,7 @@ async function renderNav() {
   }
 }
 
-// Fetch current login status/user info from the backend.
+// Asks the server who the current user is (logged in or not) for showing account status.
 async function fetchMe() {
   const resp = await fetch("/api/auth/me");
   const data = await resp.json();
@@ -77,7 +78,7 @@ async function fetchMe() {
   return data;
 }
 
-// Escape a string for safe HTML text rendering.
+// Escapes text so it is safe to insert into HTML (prevents broken markup/injection).
 function escapeHtml(s) {
   return String(s)
     .replaceAll("&", "&amp;")

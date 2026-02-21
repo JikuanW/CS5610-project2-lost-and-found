@@ -6,13 +6,14 @@ const form = document.getElementById("loginForm");
 const logoutBtn = document.getElementById("logoutBtn");
 const msg = document.getElementById("msg");
 
-// Show a message box with success/error styling.
+// Shows a message box so the user can see success or error feedback.
 function showMsg(text, ok) {
   msg.style.display = "block";
   msg.textContent = text;
   msg.className = ok ? "alert alert-ok" : "alert alert-err";
 }
 
+// When the user submits the login form, send credentials to the server and redirect on success.
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -45,6 +46,7 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
+// When the user clicks Logout, tell the server to end the session and refresh the page.
 logoutBtn.addEventListener("click", async () => {
   try {
     const resp = await fetch("/api/auth/logout", { method: "POST" });

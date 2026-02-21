@@ -5,14 +5,14 @@ import { playSuccess, playError } from "/js/sound.js";
 const msg = document.getElementById("msg");
 const listDiv = document.getElementById("list");
 
-// Show a message box with success/error styling.
+// Shows a message box so the user can see success or error feedback.
 function showMsg(text, ok) {
   msg.style.display = "block";
   msg.textContent = text;
   msg.className = ok ? "alert alert-ok" : "alert alert-err";
 }
 
-// Hide the message box.
+// Hides the message box when we want the page to look clean.
 function hideMsg() {
   msg.style.display = "none";
 }
@@ -25,7 +25,7 @@ if (params.get("login") === "success") {
   window.history.replaceState({}, "", "/lost-my.html");
 }
 
-// Fetch the current user's items and render the list UI.
+// Loads the current user's lost items from the server and renders them into the page.
 async function loadMyItems() {
   try {
     const resp = await fetch("/api/lost-items/mine");
@@ -113,6 +113,7 @@ async function loadMyItems() {
 
     document.querySelectorAll(".editBtn").forEach((btn) => {
       btn.addEventListener("click", (e) => {
+        // When the user clicks Edit, open the edit page for that item.
         const id = e.target.closest("div[data-id]").dataset.id;
         window.location.href = `/lost-edit.html?id=${encodeURIComponent(id)}`;
       });
@@ -120,6 +121,7 @@ async function loadMyItems() {
 
     document.querySelectorAll(".deleteBtn").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
+        // When the user clicks Delete, remove the item on the server and then refresh the list.
         const id = e.target.closest("div[data-id]").dataset.id;
         const ok = await deleteItem(id);
         if (ok) {
@@ -131,6 +133,7 @@ async function loadMyItems() {
 
     document.querySelectorAll(".resolveBtn").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
+        // When the user clicks Mark Resolved, update the item status on the server and then refresh the list.
         const id = e.target.closest("div[data-id]").dataset.id;
         const ok = await resolveItem(id);
         if (ok) {
@@ -146,7 +149,7 @@ async function loadMyItems() {
   }
 }
 
-// Request deletion of an item by id and report errors.
+// Sends a delete request to the server for one lost item, and reports errors if it fails.
 async function deleteItem(id) {
   try {
     const resp = await fetch(`/api/lost-items/${id}`, { method: "DELETE" });
@@ -164,7 +167,7 @@ async function deleteItem(id) {
   }
 }
 
-// Request marking an item as resolved and report errors.
+// Sends a request to mark one lost item as resolved on the server, and reports errors if it fails.
 async function resolveItem(id) {
   try {
     const resp = await fetch(`/api/lost-items/${id}/resolve`, {
@@ -184,7 +187,7 @@ async function resolveItem(id) {
   }
 }
 
-// Escape a string for safe HTML text rendering.
+// Escapes text so it is safe to insert into HTML (prevents broken markup/injection).
 function escapeHtml(s) {
   return String(s)
     .replaceAll("&", "&amp;")
@@ -194,9 +197,10 @@ function escapeHtml(s) {
     .replaceAll("'", "&#039;");
 }
 
-// Escape a string for safe HTML attribute usage.
+// Escapes text so it is safe to insert into an HTML attribute like href or src.
 function escapeAttr(s) {
   return String(s).replaceAll('"', "&quot;");
 }
 
+// Initial page load: fetch and render the user's items right away.
 loadMyItems();

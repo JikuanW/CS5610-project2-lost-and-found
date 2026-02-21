@@ -5,7 +5,7 @@ import { playSuccess, playError } from "/js/sound.js";
 const msg = document.getElementById("msg");
 const form = document.getElementById("editForm");
 
-// Show a message box with success/error styling.
+// Shows a message box so the user can see success or error feedback.
 function showMsg(text, ok) {
   msg.style.display = "block";
   msg.textContent = text;
@@ -22,7 +22,7 @@ if (!id) {
   loadItem();
 }
 
-// Fetch the item by id and prefill the edit form.
+// Loads the existing lost-item data from the server and fills the edit form fields.
 async function loadItem() {
   try {
     const resp = await fetch(`/api/lost-items/${id}`);
@@ -49,7 +49,7 @@ async function loadItem() {
   }
 }
 
-// Set a <select> value, adding an option if it doesn't exist.
+// Sets a <select> value; if the value is not in the dropdown, add it as an 'Other' option.
 function setSelectValueOrAddOption(selectEl, value) {
   if (!value) return;
 
@@ -66,6 +66,7 @@ function setSelectValueOrAddOption(selectEl, value) {
   selectEl.value = value;
 }
 
+// When the user saves the form, send the updated lost-item fields to the server.
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
