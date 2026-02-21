@@ -14,6 +14,73 @@
 const res = await fetch("/api/admin/items");
 const data = await res.json();
 
+const contentDiv = document.getElementById("content");
+
+function escapeHtml(s) {
+  return String(s)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function renderLostItems(items) {
+  if (!items.length) return `<div>No lost items found.</div>`;
+  return items.map(it => `
+    <div style="margin-bottom: 10px; border: 1px solid #ccc; padding: 8px;">
+      <div><b>${escapeHtml(it.title || it.name)}</b></div>
+      <div>${escapeHtml(it.location || "")} • ${escapeHtml(it.date || "")}</div>
+      <button class="deleteBtn" data-id="${it._id || it.id}">Delete</button>
+    </div>
+  `).join("");
+}
+
+contentDiv.innerHTML = `
+<h2>Lost Items</h2>
+<div id="lostItems">${renderLostItems(data.lost)}</div>
+
+<h2>Found Items</h2>
+<pre>${JSON.stringify(data.found, null, 2)}</pre>
+`;
+
+// Add delete button functionality
+document.querySelectorAll(".deleteBtn").forEach(btn => {
+  btn.addEventListener("click", async (e) => {
+    const id = e.target.dataset.id;
+    if (!confirm("Are you sure you want to delete this item?")) return;
+
+    const ok = await fetch(`/api/lost-items/${id}`, { method: "DELETE" })
+      .then(r => r.ok)
+      .catch(() => false);
+
+    if (ok) {
+      alert("Deleted!");
+      e.target.parentElement.remove(); // remove from DOM
+    } else {
+      alert("Delete failed.");
+    }
+  });
+});
+</script>
+</body>
+</html>
+<!-- <!doctype html>
+<html>
+<head>
+  <title>Admin</title>
+  <link rel="stylesheet" href="/css/base.css" />
+</head>
+<body>
+<div class="container">
+  <h1>Admin Dashboard</h1>
+  <div id="content"></div>
+</div>
+
+<script type="module">
+const res = await fetch("/api/admin/items");
+const data = await res.json();
+
 document.getElementById("content").innerHTML = `
 <h2>Lost Items</h2>
 <pre>${JSON.stringify(data.lost, null, 2)}</pre>
@@ -23,4 +90,4 @@ document.getElementById("content").innerHTML = `
 `;
 </script>
 </body>
-</html>
+</html> -->
