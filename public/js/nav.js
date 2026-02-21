@@ -8,6 +8,7 @@ if (navDiv) {
   renderNav();
 }
 
+// Render the navbar based on login status and wire up logout.
 async function renderNav() {
   const me = await fetchMe();
 
@@ -68,6 +69,7 @@ async function renderNav() {
   }
 }
 
+// Fetch current login status/user info from the backend.
 async function fetchMe() {
   const resp = await fetch("/api/auth/me");
   const data = await resp.json();
@@ -75,6 +77,7 @@ async function fetchMe() {
   return data;
 }
 
+// Escape a string for safe HTML text rendering.
 function escapeHtml(s) {
   return String(s)
     .replaceAll("&", "&amp;")

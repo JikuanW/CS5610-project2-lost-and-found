@@ -5,12 +5,14 @@ import { playSuccess, playError } from "/js/sound.js";
 const msg = document.getElementById("msg");
 const listDiv = document.getElementById("list");
 
+// Show a message box with success/error styling.
 function showMsg(text, ok) {
   msg.style.display = "block";
   msg.textContent = text;
   msg.className = ok ? "alert alert-ok" : "alert alert-err";
 }
 
+// Hide the message box.
 function hideMsg() {
   msg.style.display = "none";
 }
@@ -23,6 +25,7 @@ if (params.get("login") === "success") {
   window.history.replaceState({}, "", "/lost-my.html");
 }
 
+// Fetch the current user's items and render the list UI.
 async function loadMyItems() {
   try {
     const resp = await fetch("/api/lost-items/mine");
@@ -143,6 +146,7 @@ async function loadMyItems() {
   }
 }
 
+// Request deletion of an item by id and report errors.
 async function deleteItem(id) {
   try {
     const resp = await fetch(`/api/lost-items/${id}`, { method: "DELETE" });
@@ -160,6 +164,7 @@ async function deleteItem(id) {
   }
 }
 
+// Request marking an item as resolved and report errors.
 async function resolveItem(id) {
   try {
     const resp = await fetch(`/api/lost-items/${id}/resolve`, {
@@ -179,6 +184,7 @@ async function resolveItem(id) {
   }
 }
 
+// Escape a string for safe HTML text rendering.
 function escapeHtml(s) {
   return String(s)
     .replaceAll("&", "&amp;")
@@ -188,6 +194,7 @@ function escapeHtml(s) {
     .replaceAll("'", "&#039;");
 }
 
+// Escape a string for safe HTML attribute usage.
 function escapeAttr(s) {
   return String(s).replaceAll('"', "&quot;");
 }

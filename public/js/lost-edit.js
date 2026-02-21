@@ -5,6 +5,7 @@ import { playSuccess, playError } from "/js/sound.js";
 const msg = document.getElementById("msg");
 const form = document.getElementById("editForm");
 
+// Show a message box with success/error styling.
 function showMsg(text, ok) {
   msg.style.display = "block";
   msg.textContent = text;
@@ -21,6 +22,7 @@ if (!id) {
   loadItem();
 }
 
+// Fetch the item by id and prefill the edit form.
 async function loadItem() {
   try {
     const resp = await fetch(`/api/lost-items/${id}`);
@@ -47,6 +49,7 @@ async function loadItem() {
   }
 }
 
+// Set a <select> value, adding an option if it doesn't exist.
 function setSelectValueOrAddOption(selectEl, value) {
   if (!value) return;
 

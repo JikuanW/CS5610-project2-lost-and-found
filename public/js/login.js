@@ -6,6 +6,7 @@ const form = document.getElementById("loginForm");
 const logoutBtn = document.getElementById("logoutBtn");
 const msg = document.getElementById("msg");
 
+// Show a message box with success/error styling.
 function showMsg(text, ok) {
   msg.style.display = "block";
   msg.textContent = text;

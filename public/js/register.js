@@ -5,6 +5,7 @@ import { playSuccess, playError } from "/js/sound.js";
 const form = document.getElementById("registerForm");
 const msg = document.getElementById("msg");
 
+// Show a message box with success/error styling.
 function showMsg(text, ok) {
   msg.style.display = "block";
   msg.textContent = text;
