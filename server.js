@@ -6,7 +6,7 @@ import authRouter from "./routes/auth.js";
 import lostItemsRouter from "./routes/lostItems.js";
 import foundItemsRoutes from "./routes/foundItems.js";
 import adminRoutes from "./routes/admin.js";
-import 'dotenv/config';
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
