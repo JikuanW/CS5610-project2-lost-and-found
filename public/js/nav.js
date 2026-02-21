@@ -39,6 +39,8 @@ async function renderNav() {
           <span class="muted">•</span>
           <a href="/login.html">Login</a>
           <span class="muted">•</span>
+          <a href="/found-browse.html">Browse Found</a>
+          <span class="muted">•</span>
           <a href="/lost-new.html">Create Lost</a>
           <span class="muted">•</span>
           <a href="/found-new.html">Create Found</a>
