@@ -12,49 +12,50 @@
         border: 1px solid #ccc;
         border-radius: 4px;
         margin-top: 12px;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
       }
-
-      .filters {
+      .filter-row {
         display: flex;
         gap: 8px;
-        flex-wrap: wrap;
         margin-bottom: 12px;
+        flex-wrap: wrap;
       }
-
-      .filters select,
-      .filters input {
+      .filter-row select {
+        flex: 1;
+        min-width: 120px;
         padding: 6px;
         border: 1px solid #ccc;
         border-radius: 4px;
+        font-size: 14px;
+      }
+      .filter-row button {
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+        font-size: 14px;
       }
     </style>
   </head>
-
   <body>
     <div class="container">
       <div id="nav"></div>
 
       <div class="card" style="margin-top: 14px">
         <div class="card-body">
-
           <div class="row">
             <h1 class="page-title" style="margin: 0">My Found Items</h1>
             <div class="spacer"></div>
             <a class="btn btn-primary" href="/found-new.html">Submit New</a>
           </div>
 
-          <!-- SEARCH -->
-          <input
-            type="text"
-            id="foundSearch"
-            placeholder="Search found items..."
-          />
+          <!-- Search Bar -->
+          <input type="text" id="foundSearch" placeholder="Search found items..." />
 
-          <!-- FILTERS -->
-          <div class="filters">
-
-            <select id="categoryFilter">
+          <!-- Filters -->
+          <div class="filter-row">
+            <select id="filterCategory">
               <option value="">All Categories</option>
               <option>Electronics</option>
               <option>ID / Card</option>
@@ -68,7 +69,7 @@
               <option>Other</option>
             </select>
 
-            <select id="locationFilter">
+            <select id="filterLocation">
               <option value="">All Locations</option>
               <option>Library</option>
               <option>Classroom</option>
@@ -83,13 +84,13 @@
               <option>Other</option>
             </select>
 
-            <input type="date" id="dateFilter" />
+            <input type="date" id="filterDate" style="flex:1; min-width:120px; padding:6px; border:1px solid #ccc; border-radius:4px; font-size:14px;" />
 
+            <button id="clearFilters">Clear</button>
           </div>
 
           <div id="msg" class="alert" style="display: none"></div>
           <div id="list" style="margin-top: 12px"></div>
-
         </div>
       </div>
     </div>
@@ -97,11 +98,10 @@
     <script type="module">
       const listDiv = document.getElementById("list");
       const msg = document.getElementById("msg");
-
       const searchInput = document.getElementById("foundSearch");
-      const categoryFilter = document.getElementById("categoryFilter");
-      const locationFilter = document.getElementById("locationFilter");
-      const dateFilter = document.getElementById("dateFilter");
+      const filterCategory = document.getElementById("filterCategory");
+      const filterLocation = document.getElementById("filterLocation");
+      const filterDate = document.getElementById("filterDate");
 
       let allFoundItems = [];
 
@@ -120,104 +120,87 @@
           .replaceAll("'", "&#039;");
       }
 
-      // LOAD ITEMS
       async function loadItems() {
         try {
           const resp = await fetch("/api/found-items/mine");
           const data = await resp.json();
-
           if (!resp.ok) {
             showMsg(data.error || "Failed to load items", false);
             listDiv.innerHTML = "";
             return;
           }
-
           allFoundItems = data.items;
-          renderItems(allFoundItems);
+          applyFilters();
         } catch {
           showMsg("Network error loading items", false);
           listDiv.innerHTML = "";
         }
       }
 
-      // RENDER
-      function renderItems(items) {
-        if (!items.length) {
-          listDiv.innerHTML = `<div>No found items yet.</div>`;
-          return;
-        }
-
-        listDiv.innerHTML = items
-          .map(
-            (it) => `
-            <div class="card" style="margin-bottom:12px;">
-              <div class="card-body">
-                <div style="font-weight:700; font-size:16px;">
-                  ${escapeHtml(it.title)}
-                </div>
-
-                <div class="muted" style="margin-top:4px;">
-                  ${escapeHtml(it.category)} • 
-                  ${escapeHtml(it.location)} • 
-                  ${escapeHtml(it.date)}
-                </div>
-
-                <div style="margin-top:6px;">
-                  <b>Description:</b> ${escapeHtml(it.description)}
-                </div>
-
-                ${
-                  it.image
-                    ? `<img src="${escapeHtml(
-                        it.image
-                      )}" style="max-width:280px; max-height:180px; border-radius:8px; margin-top:6px;" />`
-                    : ""
-                }
-              </div>
-            </div>
-          `
-          )
-          .join("");
-      }
-
-      // 🔥 ONE FILTER FUNCTION (search + filters together)
       function applyFilters() {
         const term = searchInput.value.toLowerCase();
-        const category = categoryFilter.value;
-        const location = locationFilter.value;
-        const date = dateFilter.value;
+        const cat = filterCategory.value;
+        const loc = filterLocation.value;
+        const date = filterDate.value; // yyyy-mm-dd
 
-        const filtered = allFoundItems.filter((item) => {
-          const matchesSearch =
+        const filtered = allFoundItems.filter(item => {
+          const matchSearch = !term ||
             item.title.toLowerCase().includes(term) ||
             item.description.toLowerCase().includes(term) ||
             item.location.toLowerCase().includes(term);
 
-          const matchesCategory =
-            !category || item.category === category;
+          const matchCat = !cat || item.category === cat;
+          const matchLoc = !loc || item.location === loc;
 
-          const matchesLocation =
-            !location || item.location === location;
+          // date stored as MM/DD/YYYY — convert to compare
+          let matchDate = true;
+          if (date) {
+            const [y, m, d] = date.split("-");
+            const normalized = `${m}/${d}/${y}`;
+            matchDate = item.date === normalized;
+          }
 
-          const matchesDate =
-            !date || item.date === date;
-
-          return (
-            matchesSearch &&
-            matchesCategory &&
-            matchesLocation &&
-            matchesDate
-          );
+          return matchSearch && matchCat && matchLoc && matchDate;
         });
 
         renderItems(filtered);
       }
 
-      // EVENTS
+      function renderItems(items) {
+        if (!items.length) {
+          listDiv.innerHTML = `<div>No found items match.</div>`;
+          return;
+        }
+
+        listDiv.innerHTML = items
+          .map(it => `
+            <div class="card" style="margin-bottom:12px;">
+              <div class="card-body">
+                <div style="font-weight:700; font-size:16px;">${escapeHtml(it.title)}</div>
+                <div class="muted" style="margin-top:4px;">
+                  ${escapeHtml(it.category)} • ${escapeHtml(it.location)} • ${escapeHtml(it.date)}
+                </div>
+                <div style="margin-top:6px;"><b>Description:</b> ${escapeHtml(it.description)}</div>
+                ${it.image ? `<img src="${escapeHtml(it.image)}" style="max-width:280px; max-height:180px; border-radius:8px; margin-top:6px;" />` : ""}
+              </div>
+            </div>
+          `)
+          .join("");
+      }
+
+      // All filters trigger same function
       searchInput.addEventListener("input", applyFilters);
-      categoryFilter.addEventListener("change", applyFilters);
-      locationFilter.addEventListener("change", applyFilters);
-      dateFilter.addEventListener("change", applyFilters);
+      filterCategory.addEventListener("change", applyFilters);
+      filterLocation.addEventListener("change", applyFilters);
+      filterDate.addEventListener("change", applyFilters);
+
+      document.getElementById("clearFilters").addEventListener("click", () => {
+        searchInput.value = "";
+        filterCategory.value = "";
+        filterLocation.value = "";
+        filterDate.value = "";
+        applyFilters();
+      });
 
       loadItems();
     </script>
