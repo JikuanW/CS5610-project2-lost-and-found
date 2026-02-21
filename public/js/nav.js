@@ -41,6 +41,10 @@ async function renderNav() {
           <span class="muted">•</span>
           <a href="/lost-new.html">Create Lost</a>
           <span class="muted">•</span>
+          <a href="/found-new.html">Create Found</a>
+          <span class="muted">•</span>
+          <a href="/found-my.html">My Found</a>
+          <span class="muted">•</span> 
           <a href="/lost-my.html">My Lost</a>
         </div>
       </div>
