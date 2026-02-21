@@ -1,6 +1,97 @@
 <!doctype html>
 <html>
 <head>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/base.css" />
+  <style>
+    .item-block {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 12px;
+    }
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn {
+      margin-left: 6px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Admin Dashboard</h1>
+
+  <h2>Found Items</h2>
+  <div id="foundList"></div>
+
+  <h2>Lost Items</h2>
+  <div id="lostList"></div>
+</div>
+
+<script type="module">
+const foundListDiv = document.getElementById("foundList");
+const lostListDiv = document.getElementById("lostList");
+
+// Load all posts
+async function loadItems() {
+  const res = await fetch("/api/admin/items");
+  const data = await res.json();
+
+  renderItems(data.found, foundListDiv, "found");
+  renderItems(data.lost, lostListDiv, "lost");
+}
+
+// Simple render with delete button
+function renderItems(items, container, type) {
+  if (!items.length) {
+    container.innerHTML = `<div>No ${type} items.</div>`;
+    return;
+  }
+
+  container.innerHTML = items.map(it => `
+    <div class="item-block" data-id="${it._id || it.id}">
+      <div class="item-row">
+        <div>
+          <strong>${it.title || it.name}</strong> (${it.category || "N/A"}) • ${it.location || "N/A"} • ${it.date || "N/A"}
+        </div>
+        <div>
+          <button class="btn deleteBtn">Delete</button>
+        </div>
+      </div>
+      <div>${it.description || ""}</div>
+      ${it.image ? `<div><a href="${it.image}" target="_blank">Image Link</a></div>` : ""}
+    </div>
+  `).join("");
+
+  // attach delete handlers
+  container.querySelectorAll(".deleteBtn").forEach(btn => {
+    btn.addEventListener("click", async e => {
+      const id = e.target.closest(".item-block").dataset.id;
+      const ok = await fetch(`/api/${type}-items/${id}`, { method: "DELETE" })
+        .then(r => r.ok)
+        .catch(() => false);
+
+      if (ok) {
+        loadItems(); // reload everything after delete
+      } else {
+        alert("Delete failed");
+      }
+    });
+  });
+}
+
+// initial load
+loadItems();
+</script>
+</body>
+</html>
+
+<!-- <!doctype html>
+<html>
+<head>
   <title>Admin</title>
   <link rel="stylesheet" href="/css/base.css" />
 </head>
@@ -23,4 +114,4 @@ document.getElementById("content").innerHTML = `
 `;
 </script>
 </body>
-</html>
+</html> -->
