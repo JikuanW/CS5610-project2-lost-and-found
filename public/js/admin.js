@@ -1,4 +1,4 @@
-// admin.js — manages lost + found items
+// admin.js — manages lost + found items (admin role required)
 import { playSuccess, playError } from "/js/sound.js";
 
 const msg = document.getElementById("msg");
@@ -11,11 +11,6 @@ function showMsg(text, ok) {
   msg.className = ok ? "alert alert-ok" : "alert alert-err";
 }
 
-function hideMsg() {
-  msg.style.display = "none";
-}
-
-// escape functions
 function escapeHtml(s) {
   return String(s)
     .replaceAll("&", "&amp;")
@@ -29,45 +24,38 @@ function escapeAttr(s) {
   return String(s).replaceAll('"', "&quot;");
 }
 
-// load lost items
+// Check admin role before loading anything
+async function checkAdmin() {
+  const resp = await fetch("/api/auth/me");
+  const data = await resp.json();
+  if (!data.loggedIn || data.role !== "admin") {
+    msg.style.display = "block";
+    msg.textContent = "Access denied. Admin only.";
+    msg.className = "alert alert-err";
+    lostListDiv.innerHTML = "";
+    foundListDiv.innerHTML = "";
+    return false;
+  }
+  return true;
+}
+
 async function loadLostItems() {
   try {
-    const resp = await fetch("/api/lost-items");
+    const resp = await fetch("/api/admin/items");
     const data = await resp.json();
     if (!resp.ok) {
       playError();
-      showMsg(data.error || "Failed to load lost items", false);
-      lostListDiv.innerHTML = "";
+      showMsg(data.error || "Failed to load items", false);
       return;
     }
-    renderItems(data.items, lostListDiv, "lost");
+    renderItems(data.lost, lostListDiv, "lost");
+    renderItems(data.found, foundListDiv, "found");
   } catch {
     playError();
-    showMsg("Network error loading lost items", false);
-    lostListDiv.innerHTML = "";
+    showMsg("Network error", false);
   }
 }
 
-// load found items
-async function loadFoundItems() {
-  try {
-    const resp = await fetch("/api/found-items");
-    const data = await resp.json();
-    if (!resp.ok) {
-      playError();
-      showMsg(data.error || "Failed to load found items", false);
-      foundListDiv.innerHTML = "";
-      return;
-    }
-    renderItems(data.items, foundListDiv, "found");
-  } catch {
-    playError();
-    showMsg("Network error loading found items", false);
-    foundListDiv.innerHTML = "";
-  }
-}
-
-// render items (lost or found)
 function renderItems(items, container, type) {
   if (!items.length) {
     container.innerHTML = `<div>No ${type} items yet.</div>`;
@@ -76,108 +64,74 @@ function renderItems(items, container, type) {
 
   container.innerHTML = items
     .map((it) => {
-      const statusText = it.resolved ? "RESOLVED" : "OPEN";
-      const claimedText = type === "found" ? (it.claimed ? "CLAIMED" : "UNCLAIMED") : "";
+      const statusText = type === "lost"
+        ? (it.resolved ? "RESOLVED" : "OPEN")
+        : (it.claimed ? "CLAIMED" : "UNCLAIMED");
       const imgUrl = (it.image || "").trim();
 
       const imageBlock = imgUrl
         ? `<div style="margin-top: 6px;">
              <div><b>Image Link:</b> <a href="${escapeAttr(imgUrl)}" target="_blank">${escapeHtml(imgUrl)}</a></div>
-             <img src="${escapeAttr(imgUrl)}" alt="Item image" style="max-width: 280px; max-height: 180px; border: 1px solid #e5e7eb; border-radius: 10px;" onerror="this.style.display='none';"/>
+             <img src="${escapeAttr(imgUrl)}" alt="Item image"
+               style="max-width: 280px; max-height: 180px; border: 1px solid #e5e7eb; border-radius: 10px;"
+               onerror="this.style.display='none';" />
            </div>`
         : `<div style="margin-top:6px;"><b>Image:</b> None</div>`;
 
       return `
-      <div class="card" style="margin-bottom:12px;" data-id="${it._id}">
-        <div class="card-body">
-          <div class="row">
-            <div>
-              <div style="font-weight:700; font-size:16px;">
-                ${escapeHtml(it.title)}
-                <span class="muted">(${statusText} ${claimedText})</span>
-              </div>
-              <div class="muted" style="margin-top:4px;">
-                ${escapeHtml(it.category)} • ${escapeHtml(it.location)} • ${escapeHtml(it.date)}
-              </div>
-            </div>
-            <div class="spacer"></div>
+        <div class="card" style="margin-bottom:12px;" data-id="${it._id}" data-type="${type}">
+          <div class="card-body">
             <div class="row">
-              <button class="btn editBtn" type="button">Edit</button>
+              <div>
+                <div style="font-weight:700; font-size:16px;">
+                  ${escapeHtml(it.title)}
+                  <span class="muted">(${statusText})</span>
+                </div>
+                <div class="muted" style="margin-top:4px;">
+                  ${escapeHtml(it.category)} • ${escapeHtml(it.location)} • ${escapeHtml(it.date)}
+                </div>
+              </div>
+              <div class="spacer"></div>
               <button class="btn btn-danger deleteBtn" type="button">Delete</button>
-              ${
-                type === "lost"
-                  ? `<button class="btn btn-primary resolveBtn" type="button" ${it.resolved ? "disabled" : ""}>Mark Resolved</button>`
-                  : `<button class="btn btn-primary claimBtn" type="button" ${it.claimed ? "disabled" : ""}>Mark Claimed</button>`
-              }
+            </div>
+            <div style="margin-top:10px;">
+              <div><b>Description:</b> ${escapeHtml(it.description)}</div>
+              ${imageBlock}
             </div>
           </div>
-          <div style="margin-top:10px;">
-            <div><b>Description:</b> ${escapeHtml(it.description)}</div>
-            ${imageBlock}
-          </div>
-        </div>
-      </div>`;
+        </div>`;
     })
     .join("");
 
-  container.querySelectorAll(".editBtn").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      const id = e.target.closest("div[data-id]").dataset.id;
-      window.location.href = `/${type}-edit.html?id=${encodeURIComponent(id)}`;
-    });
-  });
-
+  // Delete buttons — use admin endpoints
   container.querySelectorAll(".deleteBtn").forEach((btn) => {
     btn.addEventListener("click", async (e) => {
-      const id = e.target.closest("div[data-id]").dataset.id;
-      const ok = await fetch(`/api/${type}-items/${id}`, { method: "DELETE" })
-        .then((r) => r.ok)
-        .catch(() => false);
-      if (ok) {
-        playSuccess();
-        type === "lost" ? loadLostItems() : loadFoundItems();
-      } else {
+      const card = e.target.closest("div[data-id]");
+      const id = card.dataset.id;
+      const itemType = card.dataset.type;
+
+      const endpoint = `/api/admin/${itemType}-items/${id}`;
+      try {
+        const resp = await fetch(endpoint, { method: "DELETE" });
+        if (resp.ok) {
+          playSuccess();
+          card.remove();
+        } else {
+          const data = await resp.json();
+          playError();
+          showMsg(data.error || "Delete failed", false);
+        }
+      } catch {
         playError();
-        showMsg("Delete failed", false);
+        showMsg("Network error", false);
       }
     });
   });
-
-  if (type === "lost") {
-    container.querySelectorAll(".resolveBtn").forEach((btn) => {
-      btn.addEventListener("click", async (e) => {
-        const id = e.target.closest("div[data-id]").dataset.id;
-        const ok = await fetch(`/api/lost-items/${id}/resolve`, { method: "PATCH" })
-          .then((r) => r.ok)
-          .catch(() => false);
-        if (ok) {
-          playSuccess();
-          loadLostItems();
-        } else {
-          playError();
-          showMsg("Resolve failed", false);
-        }
-      });
-    });
-  } else {
-    container.querySelectorAll(".claimBtn").forEach((btn) => {
-      btn.addEventListener("click", async (e) => {
-        const id = e.target.closest("div[data-id]").dataset.id;
-        const ok = await fetch(`/api/found-items/${id}/claim`, { method: "PATCH" })
-          .then((r) => r.ok)
-          .catch(() => false);
-        if (ok) {
-          playSuccess();
-          loadFoundItems();
-        } else {
-          playError();
-          showMsg("Claim failed", false);
-        }
-      });
-    });
-  }
 }
 
-// initial load
-loadLostItems();
-loadFoundItems();
+async function init() {
+  const ok = await checkAdmin();
+  if (ok) loadLostItems();
+}
+
+init();
