@@ -4,6 +4,12 @@ import { requireLogin } from "../middleware/auth.js";
 
 const router = express.Router();
 
+// Mock admin data
+const users = [
+  { id: 1, username: "admin1", role: "admin" },
+  { id: 2, username: "admin2", role: "admin" },
+];
+
 router.get("/items", requireLogin, async (req, res) => {
   const db = getDb();
 

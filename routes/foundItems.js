@@ -5,6 +5,12 @@ import { requireLogin } from "../middleware/auth.js";
 
 const router = express.Router();
 
+// Mock found items
+let foundItems = [
+  { id: 1, name: "Green wallet", location: "Library", date: "2026-02-20" },
+  { id: 2, name: "Black keys", location: "Cafeteria", date: "2026-02-19" },
+];
+
 /**
  * POST /api/found-items
  * Create found item

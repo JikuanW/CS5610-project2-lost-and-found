@@ -7,6 +7,12 @@ import { requireLogin } from "../middleware/auth.js";
 
 const router = express.Router();
 
+// Mock lost items
+let lostItems = [
+  { id: 1, name: "Red backpack", location: "Classroom", date: "2026-02-20" },
+  { id: 2, name: "Blue umbrella", location: "Bus stop", date: "2026-02-19" },
+];
+
 /**
  * POST /api/lost-items
  * Create lost item
