@@ -46,6 +46,8 @@ async function renderNav() {
           <a href="/found-my.html">My Found</a>
           <span class="muted">•</span> 
           <a href="/lost-my.html">My Lost</a>
+          <span class="muted">•</span> 
+          <a href="/found-my.html">Admin</a>
         </div>
       </div>
     </div>
