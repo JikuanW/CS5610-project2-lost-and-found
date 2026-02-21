@@ -17,6 +17,10 @@ Build a campus Lost & Found web app where users can sign up/login and post lost 
 
 ![Screenshot](./images/screenshot.png)
 
+## Design Document
+
+[View the design document](./design.md)
+
 ## Live Application
 
 Deployed on Render:
