@@ -1,5 +1,3 @@
-// Lost items routes
-
 import express from "express";
 import { ObjectId } from "mongodb";
 import { getDb } from "../db/mongo.js";
@@ -7,53 +5,52 @@ import { requireLogin } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// Mock lost items
-let lostItems = [
-  { id: 1, name: "Red backpack", location: "Classroom", date: "2026-02-20" },
-  { id: 2, name: "Blue umbrella", location: "Bus stop", date: "2026-02-19" },
+// Mock found items
+let foundItems = [
+  { id: 1, name: "Green wallet", location: "Library", date: "2026-02-20" },
+  { id: 2, name: "Black keys", location: "Cafeteria", date: "2026-02-19" },
 ];
 
 /**
- * POST /api/lost-items
- * Create lost item
+ * POST /api/found-items
+ * Create found item
  * body: { title, description, category, location, date, image }
  */
 router.post("/", requireLogin, async (req, res) => {
   const { title, description, category, location, date, image } = req.body;
 
-  // minimal validation
   if (!title || !description || !category || !location || !date) {
     return res.status(400).json({ error: "missing required fields" });
   }
 
   const db = getDb();
-  const lostItems = db.collection("lost_items");
+  const foundItems = db.collection("found_items");
 
   const doc = {
     title,
     description,
     category,
     location,
-    date, // store as string
+    date,
     image: image || "",
     ownerUserId: req.user.userId,
-    resolved: false,
+    claimed: false,
     createdAt: new Date(),
   };
 
-  const result = await lostItems.insertOne(doc);
+  const result = await foundItems.insertOne(doc);
   return res.json({ ok: true, id: result.insertedId });
 });
 
 /**
- * GET /api/lost-items/mine
- * List my lost items
+ * GET /api/found-items/mine
+ * List my found items
  */
 router.get("/mine", requireLogin, async (req, res) => {
   const db = getDb();
-  const lostItems = db.collection("lost_items");
+  const foundItems = db.collection("found_items");
 
-  const items = await lostItems
+  const items = await foundItems
     .find({ ownerUserId: req.user.userId })
     .sort({ createdAt: -1 })
     .toArray();
@@ -62,13 +59,13 @@ router.get("/mine", requireLogin, async (req, res) => {
 });
 
 /**
- * GET /api/lost-items/:id
+ * GET /api/found-items/:id
  * Get one item (must be mine)
  */
 router.get("/:id", requireLogin, async (req, res) => {
   const { id } = req.params;
-
   let _id;
+
   try {
     _id = new ObjectId(id);
   } catch {
@@ -76,9 +73,9 @@ router.get("/:id", requireLogin, async (req, res) => {
   }
 
   const db = getDb();
-  const lostItems = db.collection("lost_items");
+  const foundItems = db.collection("found_items");
 
-  const item = await lostItems.findOne({ _id });
+  const item = await foundItems.findOne({ _id });
   if (!item) return res.status(404).json({ error: "not found" });
 
   if (item.ownerUserId !== req.user.userId) {
@@ -89,7 +86,7 @@ router.get("/:id", requireLogin, async (req, res) => {
 });
 
 /**
- * PUT /api/lost-items/:id
+ * PUT /api/found-items/:id
  * Edit my item
  */
 router.put("/:id", requireLogin, async (req, res) => {
@@ -108,16 +105,16 @@ router.put("/:id", requireLogin, async (req, res) => {
   }
 
   const db = getDb();
-  const lostItems = db.collection("lost_items");
+  const foundItems = db.collection("found_items");
 
-  const item = await lostItems.findOne({ _id });
+  const item = await foundItems.findOne({ _id });
   if (!item) return res.status(404).json({ error: "not found" });
 
   if (item.ownerUserId !== req.user.userId) {
     return res.status(403).json({ error: "forbidden" });
   }
 
-  await lostItems.updateOne(
+  await foundItems.updateOne(
     { _id },
     {
       $set: {
@@ -135,13 +132,13 @@ router.put("/:id", requireLogin, async (req, res) => {
 });
 
 /**
- * DELETE /api/lost-items/:id
+ * DELETE /api/found-items/:id
  * Delete my item
  */
 router.delete("/:id", requireLogin, async (req, res) => {
   const { id } = req.params;
-
   let _id;
+
   try {
     _id = new ObjectId(id);
   } catch {
@@ -149,24 +146,52 @@ router.delete("/:id", requireLogin, async (req, res) => {
   }
 
   const db = getDb();
-  const lostItems = db.collection("lost_items");
+  const foundItems = db.collection("found_items");
 
-  const item = await lostItems.findOne({ _id });
+  const item = await foundItems.findOne({ _id });
   if (!item) return res.status(404).json({ error: "not found" });
 
   if (item.ownerUserId !== req.user.userId) {
     return res.status(403).json({ error: "forbidden" });
   }
 
-  await lostItems.deleteOne({ _id });
+  await foundItems.deleteOne({ _id });
   return res.json({ ok: true });
 });
 
 /**
- * PATCH /api/lost-items/:id/resolve
- * Mark resolved
+ * PATCH /api/found-items/:id/claim
+ * Mark claimed
  */
-router.patch("/:id/resolve", requireLogin, async (req, res) => {
+router.patch("/:id/claim", requireLogin, async (req, res) => {
+  const { id } = req.params;
+  let _id;
+
+  try {
+    _id = new ObjectId(id);
+  } catch {
+    return res.status(400).json({ error: "invalid id" });
+  }
+
+  const db = getDb();
+  const foundItems = db.collection("found_items");
+
+  const item = await foundItems.findOne({ _id });
+  if (!item) return res.status(404).json({ error: "not found" });
+
+  if (item.ownerUserId !== req.user.userId) {
+    return res.status(403).json({ error: "forbidden" });
+  }
+
+  await foundItems.updateOne({ _id }, { $set: { claimed: true } });
+  return res.json({ ok: true });
+});
+
+/**
+ * PATCH /api/found-items/:id/claim
+ * Mark item as claimed
+ */
+router.patch("/:id/claim", requireLogin, async (req, res) => {
   const { id } = req.params;
 
   let _id;
@@ -177,17 +202,21 @@ router.patch("/:id/resolve", requireLogin, async (req, res) => {
   }
 
   const db = getDb();
-  const lostItems = db.collection("lost_items");
+  const foundItems = db.collection("found_items");
 
-  const item = await lostItems.findOne({ _id });
+  const item = await foundItems.findOne({ _id });
   if (!item) return res.status(404).json({ error: "not found" });
 
   if (item.ownerUserId !== req.user.userId) {
     return res.status(403).json({ error: "forbidden" });
   }
 
-  await lostItems.updateOne({ _id }, { $set: { resolved: true } });
-  return res.json({ ok: true });
+  await foundItems.updateOne(
+    { _id },
+    { $set: { claimed: true } }
+  );
+
+  res.json({ ok: true });
 });
 
 export default router;

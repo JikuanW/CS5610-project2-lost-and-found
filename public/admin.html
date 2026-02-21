@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+  <title>Admin</title>
+  <link rel="stylesheet" href="/css/base.css" />
+</head>
+<body>
+<div class="container">
+  <h1>Admin Dashboard</h1>
+  <div id="content"></div>
+</div>
+
+<script type="module">
+const res = await fetch("/api/admin/items");
+const data = await res.json();
+
+document.getElementById("content").innerHTML = `
+<h2>Lost Items</h2>
+<pre>${JSON.stringify(data.lost, null, 2)}</pre>
+
+<h2>Found Items</h2>
+<pre>${JSON.stringify(data.found, null, 2)}</pre>
+`;
+</script>
+</body>
+</html>

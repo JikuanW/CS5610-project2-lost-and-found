@@ -1,0 +1,186 @@
+import { playSuccess, playError } from "/js/sound.js";
+
+const msg = document.getElementById("msg");
+const listDiv = document.getElementById("list");
+
+function showMsg(text, ok) {
+  msg.style.display = "block";
+  msg.textContent = text;
+  msg.className = ok ? "alert alert-ok" : "alert alert-err";
+}
+
+function hideMsg() {
+  msg.style.display = "none";
+}
+
+// Show login success message
+const params = new URLSearchParams(window.location.search);
+if (params.get("login") === "success") {
+  playSuccess();
+  showMsg("Logged in successfully.", true);
+  window.history.replaceState({}, "", "/found-my.html");
+}
+
+async function loadMyItems() {
+  try {
+    const resp = await fetch("/api/found-items/mine");
+    const data = await resp.json();
+
+    if (!resp.ok) {
+      playError();
+      showMsg(data.error || "Failed to load", false);
+      listDiv.innerHTML = "";
+      return;
+    }
+
+    const items = data.items;
+
+    if (items.length === 0) {
+      if (!params.get("login")) showMsg("No items yet.", true);
+      listDiv.innerHTML = "";
+      return;
+    }
+
+    hideMsg();
+
+    listDiv.innerHTML = items
+      .map((it) => {
+        const statusText = it.claimed ? "CLAIMED" : "OPEN";
+        const imgUrl = (it.image || "").trim();
+
+        const imageBlock = imgUrl
+          ? `
+          <div class="muted" style="margin-top: 6px;">
+            <div><b>Image Link:</b> <a href="${escapeAttr(imgUrl)}" target="_blank">${escapeHtml(imgUrl)}</a></div>
+            <div style="margin-top: 8px;">
+              <img
+                src="${escapeAttr(imgUrl)}"
+                alt="Found item image"
+                style="max-width: 280px; max-height: 180px; border: 1px solid #e5e7eb; border-radius: 10px; display: block;"
+                onerror="this.style.display='none'; this.parentElement.querySelector('.imgError').style.display='block';"
+              />
+              <div class="imgError alert alert-err" style="display:none; margin-top: 8px;">
+                Image link cannot be opened.
+              </div>
+            </div>
+          </div>
+        `
+          : `<div class="muted" style="margin-top: 6px;"><b>Image:</b> No image</div>`;
+
+        return `
+        <div class="card" style="margin-bottom: 12px;" data-id="${it._id}">
+          <div class="card-body">
+            <div class="row">
+              <div>
+                <div style="font-weight: 700; font-size: 16px;">
+                  ${escapeHtml(it.title)}
+                  <span class="muted">(${statusText})</span>
+                </div>
+                <div class="muted" style="margin-top: 4px;">
+                  ${escapeHtml(it.category)} • ${escapeHtml(it.location)} • ${escapeHtml(it.date)}
+                </div>
+              </div>
+              <div class="spacer"></div>
+              <div class="row">
+                <button class="btn editBtn" type="button">Edit</button>
+                <button class="btn btn-danger deleteBtn" type="button">Delete</button>
+                <button class="btn btn-primary claimBtn" type="button" ${it.claimed ? "disabled" : ""}>Mark Claimed</button>
+              </div>
+            </div>
+
+            <div style="margin-top: 10px;">
+              <div><b>Description:</b> ${escapeHtml(it.description)}</div>
+              ${imageBlock}
+            </div>
+          </div>
+        </div>
+      `;
+      })
+      .join("");
+
+    // Edit buttons
+    document.querySelectorAll(".editBtn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const id = e.target.closest("div[data-id]").dataset.id;
+        window.location.href = `/found-edit.html?id=${encodeURIComponent(id)}`;
+      });
+    });
+
+    // Delete buttons
+    document.querySelectorAll(".deleteBtn").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const id = e.target.closest("div[data-id]").dataset.id;
+        const ok = await deleteItem(id);
+        if (ok) {
+          playSuccess();
+          await loadMyItems();
+        }
+      });
+    });
+
+    // Claim buttons
+    document.querySelectorAll(".claimBtn").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const id = e.target.closest("div[data-id]").dataset.id;
+        const ok = await claimItem(id);
+        if (ok) {
+          playSuccess();
+          await loadMyItems();
+        }
+      });
+    });
+  } catch {
+    playError();
+    showMsg("Network error", false);
+    listDiv.innerHTML = "";
+  }
+}
+
+async function deleteItem(id) {
+  try {
+    const resp = await fetch(`/api/found-items/${id}`, { method: "DELETE" });
+    const data = await resp.json();
+
+    if (resp.ok) return true;
+
+    playError();
+    showMsg(data.error || "Delete failed", false);
+    return false;
+  } catch {
+    playError();
+    showMsg("Network error", false);
+    return false;
+  }
+}
+
+async function claimItem(id) {
+  try {
+    const resp = await fetch(`/api/found-items/${id}/claim`, { method: "PATCH" });
+    const data = await resp.json();
+
+    if (resp.ok) return true;
+
+    playError();
+    showMsg(data.error || "Claim failed", false);
+    return false;
+  } catch {
+    playError();
+    showMsg("Network error", false);
+    return false;
+  }
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function escapeAttr(s) {
+  return String(s).replaceAll('"', "&quot;");
+}
+
+loadMyItems();
