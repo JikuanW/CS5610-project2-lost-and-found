@@ -1,4 +1,4 @@
-// admin.js — manages lost + found items (admin role required)
+// admin.js — manages lost + found items
 import { playSuccess, playError } from "/js/sound.js";
 
 const msg = document.getElementById("msg");
@@ -24,14 +24,11 @@ function escapeAttr(s) {
   return String(s).replaceAll('"', "&quot;");
 }
 
-// Check admin role before loading anything
 async function checkAdmin() {
   const resp = await fetch("/api/auth/me");
   const data = await resp.json();
   if (!data.loggedIn || data.role !== "admin") {
-    msg.style.display = "block";
-    msg.textContent = "Access denied. Admin only.";
-    msg.className = "alert alert-err";
+    showMsg("Access denied. Admin only.", false);
     lostListDiv.innerHTML = "";
     foundListDiv.innerHTML = "";
     return false;
@@ -39,7 +36,8 @@ async function checkAdmin() {
   return true;
 }
 
-async function loadLostItems() {
+// Single fetch gets both lost + found
+async function loadAllItems() {
   try {
     const resp = await fetch("/api/admin/items");
     const data = await resp.json();
@@ -57,7 +55,7 @@ async function loadLostItems() {
 }
 
 function renderItems(items, container, type) {
-  if (!items.length) {
+  if (!items || !items.length) {
     container.innerHTML = `<div>No ${type} items yet.</div>`;
     return;
   }
@@ -67,16 +65,15 @@ function renderItems(items, container, type) {
       const statusText = type === "lost"
         ? (it.resolved ? "RESOLVED" : "OPEN")
         : (it.claimed ? "CLAIMED" : "UNCLAIMED");
-      const imgUrl = (it.image || "").trim();
 
+      const imgUrl = (it.image || "").trim();
       const imageBlock = imgUrl
         ? `<div style="margin-top: 6px;">
-             <div><b>Image Link:</b> <a href="${escapeAttr(imgUrl)}" target="_blank">${escapeHtml(imgUrl)}</a></div>
              <img src="${escapeAttr(imgUrl)}" alt="Item image"
                style="max-width: 280px; max-height: 180px; border: 1px solid #e5e7eb; border-radius: 10px;"
                onerror="this.style.display='none';" />
            </div>`
-        : `<div style="margin-top:6px;"><b>Image:</b> None</div>`;
+        : "";
 
       return `
         <div class="card" style="margin-bottom:12px;" data-id="${it._id}" data-type="${type}">
@@ -103,19 +100,17 @@ function renderItems(items, container, type) {
     })
     .join("");
 
-  // Delete buttons — use admin endpoints
   container.querySelectorAll(".deleteBtn").forEach((btn) => {
     btn.addEventListener("click", async (e) => {
       const card = e.target.closest("div[data-id]");
       const id = card.dataset.id;
       const itemType = card.dataset.type;
 
-      const endpoint = `/api/admin/${itemType}-items/${id}`;
       try {
-        const resp = await fetch(endpoint, { method: "DELETE" });
+        const resp = await fetch(`/api/admin/${itemType}-items/${id}`, { method: "DELETE" });
         if (resp.ok) {
           playSuccess();
-          card.remove();
+          card.remove(); // instantly removes from page, no reload needed
         } else {
           const data = await resp.json();
           playError();
@@ -131,7 +126,7 @@ function renderItems(items, container, type) {
 
 async function init() {
   const ok = await checkAdmin();
-  if (ok) loadLostItems();
+  if (ok) loadAllItems();
 }
 
 init();
