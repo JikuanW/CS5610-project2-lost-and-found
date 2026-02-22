@@ -29,26 +29,35 @@ https://lost-and-found-tracker-c0kf.onrender.com
 
 ## Instructions to build
 
-### 1 Install
+### 1. Install
 
 ```bash
 npm install
 ```
 
-### 2 Set MongoDB connection
+### 2. Set MongoDB connection
+
+macOS / Linux:
 
 ```bash
 export MONGO_URL="YOUR_MONGO_CONNECTION_STRING"
 export DB_NAME="project2_lost_and_found"
 ```
 
-### 3 Start server
+Windows (PowerShell):
+
+```powershell
+$env:MONGO_URL="YOUR_MONGO_CONNECTION_STRING"
+$env:DB_NAME="project2_lost_and_found"
+```
+
+### 3. Start server
 
 ```bash
 node server.js
 ```
 
-### 4 Open pages in browser
+### 4. Open pages in browser
 
 http://localhost:3000
 
