@@ -62,9 +62,14 @@ function renderItems(items, container, type) {
 
   container.innerHTML = items
     .map((it) => {
-      const statusText = type === "lost"
-        ? (it.resolved ? "RESOLVED" : "OPEN")
-        : (it.claimed ? "CLAIMED" : "UNCLAIMED");
+      const statusText =
+        type === "lost"
+          ? it.resolved
+            ? "RESOLVED"
+            : "OPEN"
+          : it.claimed
+            ? "CLAIMED"
+            : "UNCLAIMED";
 
       const imgUrl = (it.image || "").trim();
       const imageBlock = imgUrl
@@ -107,7 +112,9 @@ function renderItems(items, container, type) {
       const itemType = card.dataset.type;
 
       try {
-        const resp = await fetch(`/api/admin/${itemType}-items/${id}`, { method: "DELETE" });
+        const resp = await fetch(`/api/admin/${itemType}-items/${id}`, {
+          method: "DELETE",
+        });
         if (resp.ok) {
           playSuccess();
           card.remove(); // instantly removes from page, no reload needed

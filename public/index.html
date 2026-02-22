@@ -5,11 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lost &amp; Found Tracker</title>
     <link rel="stylesheet" href="/css/base.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      * { box-sizing: border-box; }
+      * {
+        box-sizing: border-box;
+      }
       body {
-        font-family: 'Inter', sans-serif;
+        font-family: "Inter", sans-serif;
         background: #f0f4f8;
         min-height: 100vh;
         margin: 0;
@@ -26,13 +31,16 @@
       }
 
       .hero-icon {
-        width: 64px; height: 64px;
+        width: 64px;
+        height: 64px;
         background: linear-gradient(135deg, #2dd4bf, #3b82f6);
         border-radius: 18px;
-        display: flex; align-items: center; justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 32px;
         margin-bottom: 28px;
-        box-shadow: 0 8px 24px rgba(59,130,246,0.25);
+        box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
       }
 
       .hero-title {
@@ -73,18 +81,22 @@
         border: 2px solid #2dd4bf;
         border-radius: 12px;
         font-size: 16px;
-        font-family: 'Inter', sans-serif;
+        font-family: "Inter", sans-serif;
         color: #0f172a;
         background: #fff;
         outline: none;
-        box-shadow: 0 4px 16px rgba(45,212,191,0.15);
-        transition: border-color 0.2s, box-shadow 0.2s;
+        box-shadow: 0 4px 16px rgba(45, 212, 191, 0.15);
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
       }
       .search-wrap input:focus {
         border-color: #3b82f6;
-        box-shadow: 0 4px 20px rgba(59,130,246,0.2);
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
       }
-      .search-wrap input::placeholder { color: #94a3b8; }
+      .search-wrap input::placeholder {
+        color: #94a3b8;
+      }
 
       .stats-row {
         display: flex;
@@ -103,7 +115,8 @@
         font-weight: 500;
       }
       .stat-dot {
-        width: 9px; height: 9px;
+        width: 9px;
+        height: 9px;
         border-radius: 50%;
         flex-shrink: 0;
       }
@@ -126,11 +139,16 @@
         text-transform: uppercase;
         cursor: pointer;
         text-decoration: none;
-        font-family: 'Inter', sans-serif;
-        transition: opacity 0.15s, transform 0.15s;
-        box-shadow: 0 4px 16px rgba(45,212,191,0.3);
+        font-family: "Inter", sans-serif;
+        transition:
+          opacity 0.15s,
+          transform 0.15s;
+        box-shadow: 0 4px 16px rgba(45, 212, 191, 0.3);
       }
-      .btn-report:hover { opacity: 0.9; transform: translateY(-1px); }
+      .btn-report:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+      }
 
       .btn-browse {
         padding: 14px 28px;
@@ -144,10 +162,15 @@
         text-transform: uppercase;
         cursor: pointer;
         text-decoration: none;
-        font-family: 'Inter', sans-serif;
-        transition: background 0.15s, transform 0.15s;
+        font-family: "Inter", sans-serif;
+        transition:
+          background 0.15s,
+          transform 0.15s;
       }
-      .btn-browse:hover { background: #eff6ff; transform: translateY(-1px); }
+      .btn-browse:hover {
+        background: #eff6ff;
+        transform: translateY(-1px);
+      }
     </style>
   </head>
   <body>
@@ -175,11 +198,11 @@
 
       <div class="stats-row">
         <div class="stat-item">
-          <div class="stat-dot" style="background:#f59e0b;"></div>
+          <div class="stat-dot" style="background: #f59e0b"></div>
           <span id="statLost">— items waiting to be found</span>
         </div>
         <div class="stat-item">
-          <div class="stat-dot" style="background:#22c55e;"></div>
+          <div class="stat-dot" style="background: #22c55e"></div>
           <span id="statClaimed">— happy reunions</span>
         </div>
       </div>
@@ -196,15 +219,19 @@
         const resp = await fetch("/api/found-items");
         const data = await resp.json();
         if (resp.ok && data.items) {
-          const total   = data.items.length;
-          const claimed = data.items.filter(i => i.claimed).length;
-          document.getElementById("statLost").textContent    = `${total} items waiting to be found`;
-          document.getElementById("statClaimed").textContent = `${claimed} happy reunions`;
+          const total = data.items.length;
+          const claimed = data.items.filter((i) => i.claimed).length;
+          document.getElementById("statLost").textContent =
+            `${total} items waiting to be found`;
+          document.getElementById("statClaimed").textContent =
+            `${claimed} happy reunions`;
         }
-      } catch { /* silent */ }
+      } catch {
+        /* silent */
+      }
 
       // Search → browse page
-      document.getElementById("heroSearch").addEventListener("keydown", e => {
+      document.getElementById("heroSearch").addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           const q = e.target.value.trim();
           window.location.href = q

@@ -5,15 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Claims</title>
     <link rel="stylesheet" href="/css/base.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      * { box-sizing: border-box; }
-      body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background: #f8fafc;
+      }
 
-      .page-wrap { padding: 24px 0 48px; }
+      .page-wrap {
+        padding: 24px 0 48px;
+      }
 
-      .page-heading { font-size: 26px; font-weight: 700; color: #0f172a; margin: 0 0 4px; }
-      .page-sub    { font-size: 14px; color: #64748b; margin: 0 0 24px; }
+      .page-heading {
+        font-size: 26px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 4px;
+      }
+      .page-sub {
+        font-size: 14px;
+        color: #64748b;
+        margin: 0 0 24px;
+      }
 
       .section-card {
         background: #fff;
@@ -30,7 +49,11 @@
         padding: 18px 22px 14px;
         border-bottom: 1px solid #f1f5f9;
       }
-      .section-title { font-size: 15px; font-weight: 600; color: #0f172a; }
+      .section-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #0f172a;
+      }
       .count-chip {
         background: #f1f5f9;
         color: #64748b;
@@ -41,7 +64,10 @@
       }
 
       /* Table */
-      table { width: 100%; border-collapse: collapse; }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
       thead th {
         padding: 10px 22px;
         text-align: left;
@@ -57,12 +83,29 @@
         border-bottom: 1px solid #f1f5f9;
         transition: background 0.1s;
       }
-      tbody tr:last-child { border-bottom: none; }
-      tbody tr:hover { background: #f8fafc; }
-      tbody td { padding: 14px 22px; font-size: 14px; color: #334155; vertical-align: middle; }
+      tbody tr:last-child {
+        border-bottom: none;
+      }
+      tbody tr:hover {
+        background: #f8fafc;
+      }
+      tbody td {
+        padding: 14px 22px;
+        font-size: 14px;
+        color: #334155;
+        vertical-align: middle;
+      }
 
-      .item-name { font-weight: 600; color: #0f172a; font-size: 14px; }
-      .item-sub  { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+      .item-name {
+        font-weight: 600;
+        color: #0f172a;
+        font-size: 14px;
+      }
+      .item-sub {
+        font-size: 12px;
+        color: #94a3b8;
+        margin-top: 2px;
+      }
 
       /* Badges */
       .badge {
@@ -74,27 +117,56 @@
         font-size: 12px;
         font-weight: 600;
       }
-      .badge svg { width: 13px; height: 13px; flex-shrink: 0; }
-      .badge-pending  { background: #fef9c3; color: #854d0e; }
-      .badge-approved { background: #dcfce7; color: #166534; }
-      .badge-rejected { background: #fee2e2; color: #991b1b; }
+      .badge svg {
+        width: 13px;
+        height: 13px;
+        flex-shrink: 0;
+      }
+      .badge-pending {
+        background: #fef9c3;
+        color: #854d0e;
+      }
+      .badge-approved {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .badge-rejected {
+        background: #fee2e2;
+        color: #991b1b;
+      }
 
       /* Action buttons */
-      .actions { display: flex; align-items: center; gap: 10px; }
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
       .icon-btn {
-        width: 32px; height: 32px;
+        width: 32px;
+        height: 32px;
         border-radius: 8px;
         border: none;
         background: transparent;
         cursor: pointer;
-        display: flex; align-items: center; justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         transition: background 0.15s;
         padding: 0;
       }
-      .icon-btn:hover { background: #f1f5f9; }
-      .icon-btn.approve:hover { background: #dcfce7; }
-      .icon-btn.reject:hover  { background: #fee2e2; }
-      .icon-btn svg { width: 18px; height: 18px; }
+      .icon-btn:hover {
+        background: #f1f5f9;
+      }
+      .icon-btn.approve:hover {
+        background: #dcfce7;
+      }
+      .icon-btn.reject:hover {
+        background: #fee2e2;
+      }
+      .icon-btn svg {
+        width: 18px;
+        height: 18px;
+      }
 
       .empty-state {
         text-align: center;
@@ -102,9 +174,15 @@
         color: #94a3b8;
         font-size: 14px;
       }
-      .empty-state .emoji { font-size: 32px; margin-bottom: 10px; }
+      .empty-state .emoji {
+        font-size: 32px;
+        margin-bottom: 10px;
+      }
 
-      #sysMsg { margin-bottom: 16px; display: none; }
+      #sysMsg {
+        margin-bottom: 16px;
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -113,7 +191,9 @@
 
       <div class="page-wrap">
         <h1 class="page-heading">Claims</h1>
-        <p class="page-sub">Track claim requests you've sent and manage ones you've received.</p>
+        <p class="page-sub">
+          Track claim requests you've sent and manage ones you've received.
+        </p>
 
         <div id="sysMsg" class="alert"></div>
 
@@ -124,7 +204,10 @@
             <span class="count-chip" id="mineCount">—</span>
           </div>
           <div id="mineContent">
-            <div class="empty-state"><div class="emoji">⏳</div>Loading...</div>
+            <div class="empty-state">
+              <div class="emoji">⏳</div>
+              Loading...
+            </div>
           </div>
         </div>
 
@@ -135,7 +218,10 @@
             <span class="count-chip" id="receivedCount">—</span>
           </div>
           <div id="receivedContent">
-            <div class="empty-state"><div class="emoji">⏳</div>Loading...</div>
+            <div class="empty-state">
+              <div class="emoji">⏳</div>
+              Loading...
+            </div>
           </div>
         </div>
       </div>
@@ -144,10 +230,10 @@
     <script type="module">
       import { playSuccess, playError } from "/js/sound.js";
 
-      const sysMsg        = document.getElementById("sysMsg");
-      const mineContent   = document.getElementById("mineContent");
+      const sysMsg = document.getElementById("sysMsg");
+      const mineContent = document.getElementById("mineContent");
       const receivedContent = document.getElementById("receivedContent");
-      const mineCount     = document.getElementById("mineCount");
+      const mineCount = document.getElementById("mineCount");
       const receivedCount = document.getElementById("receivedCount");
 
       function showSysMsg(text, ok) {
@@ -158,18 +244,24 @@
 
       function esc(s) {
         return String(s)
-          .replaceAll("&","&amp;").replaceAll("<","&lt;")
-          .replaceAll(">","&gt;").replaceAll('"',"&quot;")
-          .replaceAll("'","&#039;");
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
       }
 
       function fmtDate(iso) {
-        return new Date(iso).toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
+        return new Date(iso).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
       }
 
       function badgeHtml(status) {
         const icons = {
-          pending:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+          pending: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
           approved: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`,
           rejected: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
         };
@@ -182,7 +274,11 @@
         try {
           const resp = await fetch("/api/claims/mine");
           const data = await resp.json();
-          if (!resp.ok) { playError(); showSysMsg(data.error || "Failed to load", false); return; }
+          if (!resp.ok) {
+            playError();
+            showSysMsg(data.error || "Failed to load", false);
+            return;
+          }
 
           mineCount.textContent = `${data.claims.length} total`;
 
@@ -202,7 +298,9 @@
                 </tr>
               </thead>
               <tbody>
-                ${data.claims.map(c => `
+                ${data.claims
+                  .map(
+                    (c) => `
                   <tr>
                     <td>
                       <div class="item-name">${esc(c.foundItemTitle)}</div>
@@ -212,7 +310,9 @@
                     </td>
                     <td style="white-space:nowrap; color:#64748b;">${fmtDate(c.createdAt)}</td>
                     <td>${badgeHtml(c.status)}</td>
-                  </tr>`).join("")}
+                  </tr>`,
+                  )
+                  .join("")}
               </tbody>
             </table>`;
         } catch {
@@ -226,7 +326,11 @@
         try {
           const resp = await fetch("/api/claims/received");
           const data = await resp.json();
-          if (!resp.ok) { playError(); showSysMsg(data.error || "Failed to load", false); return; }
+          if (!resp.ok) {
+            playError();
+            showSysMsg(data.error || "Failed to load", false);
+            return;
+          }
 
           receivedCount.textContent = `${data.claims.length} total`;
 
@@ -248,7 +352,9 @@
                 </tr>
               </thead>
               <tbody>
-                ${data.claims.map(c => `
+                ${data.claims
+                  .map(
+                    (c) => `
                   <tr data-id="${c._id}">
                     <td><div class="item-name">${esc(c.foundItemTitle)}</div></td>
                     <td>
@@ -261,26 +367,32 @@
                     <td>${badgeHtml(c.status)}</td>
                     <td>
                       <div class="actions">
-                        ${c.status === "pending" ? `
+                        ${
+                          c.status === "pending"
+                            ? `
                           <button class="icon-btn approve approveBtn" title="Approve">
                             <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                           </button>
                           <button class="icon-btn reject rejectBtn" title="Reject">
                             <svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                          </button>` : "—"}
+                          </button>`
+                            : "—"
+                        }
                       </div>
                     </td>
-                  </tr>`).join("")}
+                  </tr>`,
+                  )
+                  .join("")}
               </tbody>
             </table>`;
 
-          receivedContent.querySelectorAll(".approveBtn").forEach(btn => {
+          receivedContent.querySelectorAll(".approveBtn").forEach((btn) => {
             btn.addEventListener("click", async (e) => {
               const id = e.target.closest("tr[data-id]").dataset.id;
               await updateClaim(id, "approve");
             });
           });
-          receivedContent.querySelectorAll(".rejectBtn").forEach(btn => {
+          receivedContent.querySelectorAll(".rejectBtn").forEach((btn) => {
             btn.addEventListener("click", async (e) => {
               const id = e.target.closest("tr[data-id]").dataset.id;
               await updateClaim(id, "reject");
@@ -294,10 +406,17 @@
 
       async function updateClaim(id, action) {
         try {
-          const resp = await fetch(`/api/claims/${id}/${action}`, { method: "PATCH" });
+          const resp = await fetch(`/api/claims/${id}/${action}`, {
+            method: "PATCH",
+          });
           const data = await resp.json();
-          if (resp.ok) { playSuccess(); loadReceived(); }
-          else { playError(); showSysMsg(data.error || "Failed", false); }
+          if (resp.ok) {
+            playSuccess();
+            loadReceived();
+          } else {
+            playError();
+            showSysMsg(data.error || "Failed", false);
+          }
         } catch {
           playError();
           showSysMsg("Network error", false);

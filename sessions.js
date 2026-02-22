@@ -17,7 +17,6 @@ export function deleteSession(sessionId) {
   sessions.delete(sessionId);
 }
 
-
 // In-memory session store
 
 // sessionId -> { userId, username }

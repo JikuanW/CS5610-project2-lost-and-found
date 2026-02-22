@@ -16,7 +16,11 @@ router.post("/", requireLogin, async (req, res) => {
   }
   const db = getDb();
   const doc = {
-    title, description, category, location, date,
+    title,
+    description,
+    category,
+    location,
+    date,
     image: image || "",
     ownerUserId: req.user.userId,
     resolved: false,
@@ -32,7 +36,8 @@ router.post("/", requireLogin, async (req, res) => {
  */
 router.get("/", async (req, res) => {
   const db = getDb();
-  const items = await db.collection("lost_items")
+  const items = await db
+    .collection("lost_items")
     .find({})
     .sort({ createdAt: -1 })
     .toArray();
@@ -45,7 +50,8 @@ router.get("/", async (req, res) => {
  */
 router.get("/mine", requireLogin, async (req, res) => {
   const db = getDb();
-  const items = await db.collection("lost_items")
+  const items = await db
+    .collection("lost_items")
     .find({ ownerUserId: req.user.userId })
     .sort({ createdAt: -1 })
     .toArray();
@@ -58,12 +64,16 @@ router.get("/mine", requireLogin, async (req, res) => {
  */
 router.get("/:id", requireLogin, async (req, res) => {
   let _id;
-  try { _id = new ObjectId(req.params.id); }
-  catch { return res.status(400).json({ error: "invalid id" }); }
+  try {
+    _id = new ObjectId(req.params.id);
+  } catch {
+    return res.status(400).json({ error: "invalid id" });
+  }
   const db = getDb();
   const item = await db.collection("lost_items").findOne({ _id });
   if (!item) return res.status(404).json({ error: "not found" });
-  if (item.ownerUserId !== req.user.userId) return res.status(403).json({ error: "forbidden" });
+  if (item.ownerUserId !== req.user.userId)
+    return res.status(403).json({ error: "forbidden" });
   return res.json({ ok: true, item });
 });
 
@@ -77,15 +87,29 @@ router.put("/:id", requireLogin, async (req, res) => {
     return res.status(400).json({ error: "missing required fields" });
   }
   let _id;
-  try { _id = new ObjectId(req.params.id); }
-  catch { return res.status(400).json({ error: "invalid id" }); }
+  try {
+    _id = new ObjectId(req.params.id);
+  } catch {
+    return res.status(400).json({ error: "invalid id" });
+  }
   const db = getDb();
   const item = await db.collection("lost_items").findOne({ _id });
   if (!item) return res.status(404).json({ error: "not found" });
-  if (item.ownerUserId !== req.user.userId) return res.status(403).json({ error: "forbidden" });
-  await db.collection("lost_items").updateOne({ _id }, {
-    $set: { title, description, category, location, date, image: image || "" }
-  });
+  if (item.ownerUserId !== req.user.userId)
+    return res.status(403).json({ error: "forbidden" });
+  await db.collection("lost_items").updateOne(
+    { _id },
+    {
+      $set: {
+        title,
+        description,
+        category,
+        location,
+        date,
+        image: image || "",
+      },
+    },
+  );
   return res.json({ ok: true });
 });
 
@@ -95,12 +119,16 @@ router.put("/:id", requireLogin, async (req, res) => {
  */
 router.delete("/:id", requireLogin, async (req, res) => {
   let _id;
-  try { _id = new ObjectId(req.params.id); }
-  catch { return res.status(400).json({ error: "invalid id" }); }
+  try {
+    _id = new ObjectId(req.params.id);
+  } catch {
+    return res.status(400).json({ error: "invalid id" });
+  }
   const db = getDb();
   const item = await db.collection("lost_items").findOne({ _id });
   if (!item) return res.status(404).json({ error: "not found" });
-  if (item.ownerUserId !== req.user.userId) return res.status(403).json({ error: "forbidden" });
+  if (item.ownerUserId !== req.user.userId)
+    return res.status(403).json({ error: "forbidden" });
   await db.collection("lost_items").deleteOne({ _id });
   return res.json({ ok: true });
 });
@@ -111,13 +139,19 @@ router.delete("/:id", requireLogin, async (req, res) => {
  */
 router.patch("/:id/resolve", requireLogin, async (req, res) => {
   let _id;
-  try { _id = new ObjectId(req.params.id); }
-  catch { return res.status(400).json({ error: "invalid id" }); }
+  try {
+    _id = new ObjectId(req.params.id);
+  } catch {
+    return res.status(400).json({ error: "invalid id" });
+  }
   const db = getDb();
   const item = await db.collection("lost_items").findOne({ _id });
   if (!item) return res.status(404).json({ error: "not found" });
-  if (item.ownerUserId !== req.user.userId) return res.status(403).json({ error: "forbidden" });
-  await db.collection("lost_items").updateOne({ _id }, { $set: { resolved: true } });
+  if (item.ownerUserId !== req.user.userId)
+    return res.status(403).json({ error: "forbidden" });
+  await db
+    .collection("lost_items")
+    .updateOne({ _id }, { $set: { resolved: true } });
   return res.json({ ok: true });
 });
 

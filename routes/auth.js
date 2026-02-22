@@ -7,7 +7,10 @@ import { setSession, deleteSession, getSession } from "../sessions.js";
 const router = express.Router();
 
 function hashPassword(password, salt) {
-  return crypto.createHash("sha256").update(password + salt).digest("hex");
+  return crypto
+    .createHash("sha256")
+    .update(password + salt)
+    .digest("hex");
 }
 
 // POST /api/auth/register
@@ -20,7 +23,8 @@ router.post("/register", async (req, res) => {
   const users = db.collection("users");
 
   const existing = await users.findOne({ username });
-  if (existing) return res.status(409).json({ error: "username already exists" });
+  if (existing)
+    return res.status(409).json({ error: "username already exists" });
 
   const salt = crypto.randomBytes(16).toString("hex");
   const passwordHash = hashPassword(password, salt);
@@ -67,7 +71,8 @@ router.post("/logout", (req, res) => {
 router.get("/me", (req, res) => {
   const sid = req.cookies.sid;
   const session = sid ? getSession(sid) : null;
-  if (!session) return res.json({ loggedIn: false, userId: "", username: "", role: "" });
+  if (!session)
+    return res.json({ loggedIn: false, userId: "", username: "", role: "" });
   return res.json({
     loggedIn: true,
     userId: session.userId,
@@ -77,13 +82,6 @@ router.get("/me", (req, res) => {
 });
 
 export default router;
-
-
-
-
-
-
-
 
 // // Auth routes
 

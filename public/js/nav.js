@@ -16,9 +16,11 @@ async function renderNav() {
       const resp = await fetch("/api/claims/received");
       const data = await resp.json();
       if (resp.ok) {
-        pendingCount = data.claims.filter(c => c.status === "pending").length;
+        pendingCount = data.claims.filter((c) => c.status === "pending").length;
       }
-    } catch { /* silent fail */ }
+    } catch {
+      /* silent fail */
+    }
   }
 
   const initials = me.loggedIn ? me.username.slice(0, 2).toUpperCase() : "?";
@@ -169,7 +171,9 @@ async function renderNav() {
       </div>
 
       <div class="topnav-right">
-        ${me.loggedIn ? `
+        ${
+          me.loggedIn
+            ? `
           <div style="position:relative;">
             <button class="avatar-btn" id="profileBtn" aria-label="Open profile menu" aria-haspopup="true">${initials}</button>
             <div class="profile-dropdown" id="profileDropdown" role="menu">
@@ -193,30 +197,37 @@ async function renderNav() {
               </div>
             </div>
           </div>
-        ` : `
+        `
+            : `
           <a href="/login.html" class="btn-login">Login</a>
           <a href="/register.html" class="btn-signup">Sign Up</a>
-        `}
+        `
+        }
       </div>
     </nav>
 
-    ${pendingCount > 0 ? `
+    ${
+      pendingCount > 0
+        ? `
     <div class="notif-banner">
       <div class="notif-banner-text">
         <span>🔔</span>
         You have <strong style="margin:0 3px;">${pendingCount} pending claim request${pendingCount > 1 ? "s" : ""}</strong> waiting for your review.
       </div>
       <a href="/claims.html" class="notif-banner-btn">Review →</a>
-    </div>` : ""}
+    </div>`
+        : ""
+    }
   `;
 
   // Profile dropdown toggle
   const profileBtn = document.getElementById("profileBtn");
-  const dropdown   = document.getElementById("profileDropdown");
+  const dropdown = document.getElementById("profileDropdown");
   if (profileBtn && dropdown) {
-    profileBtn.addEventListener("click", e => {
+    profileBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+      dropdown.style.display =
+        dropdown.style.display === "block" ? "none" : "block";
     });
     document.addEventListener("click", () => {
       if (dropdown) dropdown.style.display = "none";

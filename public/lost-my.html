@@ -7,17 +7,34 @@
     <link rel="stylesheet" href="/css/base.css" />
     <style>
       #lostSearch {
-        width: 100%; padding: 6px; border: 1px solid #ccc;
-        border-radius: 4px; margin-top: 12px; margin-bottom: 8px;
+        width: 100%;
+        padding: 6px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-top: 12px;
+        margin-bottom: 8px;
       }
-      .filter-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+      .filter-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
       .filter-row select {
-        flex: 1; min-width: 120px; padding: 6px;
-        border: 1px solid #ccc; border-radius: 4px; font-size: 14px;
+        flex: 1;
+        min-width: 120px;
+        padding: 6px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
       }
       .filter-row button {
-        padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px;
-        background: white; cursor: pointer; font-size: 14px;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+        font-size: 14px;
       }
     </style>
   </head>
@@ -32,25 +49,54 @@
             <a class="btn btn-primary" href="/lost-new.html">Create New</a>
           </div>
 
-          <input type="text" id="lostSearch" placeholder="Search lost items..." aria-label="Search lost items" />
+          <input
+            type="text"
+            id="lostSearch"
+            placeholder="Search lost items..."
+            aria-label="Search lost items"
+          />
 
           <div class="filter-row">
             <select id="filterCategory" aria-label="Filter by category">
               <option value="">All Categories</option>
-              <option>Electronics</option><option>ID / Card</option><option>Keys</option>
-              <option>Wallet</option><option>Clothing</option><option>Books / Notes</option>
-              <option>Accessories / Jewelry</option><option>Bag / Backpack</option>
-              <option>Water Bottle</option><option>Other</option>
+              <option>Electronics</option>
+              <option>ID / Card</option>
+              <option>Keys</option>
+              <option>Wallet</option>
+              <option>Clothing</option>
+              <option>Books / Notes</option>
+              <option>Accessories / Jewelry</option>
+              <option>Bag / Backpack</option>
+              <option>Water Bottle</option>
+              <option>Other</option>
             </select>
             <select id="filterLocation" aria-label="Filter by location">
               <option value="">All Locations</option>
-              <option>Library</option><option>Classroom</option><option>Lecture Hall</option>
-              <option>Cafeteria</option><option>Gym</option><option>Dormitory</option>
-              <option>Student Center</option><option>Parking Lot</option>
-              <option>Bus Stop</option><option>Outdoor / Courtyard</option><option>Other</option>
+              <option>Library</option>
+              <option>Classroom</option>
+              <option>Lecture Hall</option>
+              <option>Cafeteria</option>
+              <option>Gym</option>
+              <option>Dormitory</option>
+              <option>Student Center</option>
+              <option>Parking Lot</option>
+              <option>Bus Stop</option>
+              <option>Outdoor / Courtyard</option>
+              <option>Other</option>
             </select>
-            <input type="date" id="filterDate" aria-label="Filter by date"
-              style="flex:1; min-width:120px; padding:6px; border:1px solid #ccc; border-radius:4px; font-size:14px;" />
+            <input
+              type="date"
+              id="filterDate"
+              aria-label="Filter by date"
+              style="
+                flex: 1;
+                min-width: 120px;
+                padding: 6px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 14px;
+              "
+            />
             <button id="clearFilters">Clear</button>
           </div>
 

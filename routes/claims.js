@@ -24,8 +24,11 @@ router.post("/", requireLogin, async (req, res) => {
   }
 
   const db = getDb();
-  const foundItem = await db.collection("found_items").findOne({ _id: foundItemObjId });
-  if (!foundItem) return res.status(404).json({ error: "found item not found" });
+  const foundItem = await db
+    .collection("found_items")
+    .findOne({ _id: foundItemObjId });
+  if (!foundItem)
+    return res.status(404).json({ error: "found item not found" });
 
   if (foundItem.ownerUserId === req.user.userId)
     return res.status(400).json({ error: "cannot claim your own post" });
@@ -35,7 +38,9 @@ router.post("/", requireLogin, async (req, res) => {
     claimantUserId: req.user.userId,
   });
   if (existing)
-    return res.status(409).json({ error: "already submitted a claim for this item" });
+    return res
+      .status(409)
+      .json({ error: "already submitted a claim for this item" });
 
   const doc = {
     foundItemId,
@@ -58,7 +63,8 @@ router.post("/", requireLogin, async (req, res) => {
  */
 router.get("/mine", requireLogin, async (req, res) => {
   const db = getDb();
-  const claims = await db.collection("claims")
+  const claims = await db
+    .collection("claims")
     .find({ claimantUserId: req.user.userId })
     .sort({ createdAt: -1 })
     .toArray();
@@ -71,7 +77,8 @@ router.get("/mine", requireLogin, async (req, res) => {
  */
 router.get("/received", requireLogin, async (req, res) => {
   const db = getDb();
-  const claims = await db.collection("claims")
+  const claims = await db
+    .collection("claims")
     .find({ foundItemOwnerId: req.user.userId })
     .sort({ createdAt: -1 })
     .toArray();
@@ -83,8 +90,11 @@ router.get("/received", requireLogin, async (req, res) => {
  */
 router.patch("/:id/approve", requireLogin, async (req, res) => {
   let _id;
-  try { _id = new ObjectId(req.params.id); }
-  catch { return res.status(400).json({ error: "invalid id" }); }
+  try {
+    _id = new ObjectId(req.params.id);
+  } catch {
+    return res.status(400).json({ error: "invalid id" });
+  }
 
   const db = getDb();
   const claim = await db.collection("claims").findOne({ _id });
@@ -92,7 +102,9 @@ router.patch("/:id/approve", requireLogin, async (req, res) => {
   if (claim.foundItemOwnerId !== req.user.userId)
     return res.status(403).json({ error: "forbidden" });
 
-  await db.collection("claims").updateOne({ _id }, { $set: { status: "approved" } });
+  await db
+    .collection("claims")
+    .updateOne({ _id }, { $set: { status: "approved" } });
   return res.json({ ok: true });
 });
 
@@ -101,8 +113,11 @@ router.patch("/:id/approve", requireLogin, async (req, res) => {
  */
 router.patch("/:id/reject", requireLogin, async (req, res) => {
   let _id;
-  try { _id = new ObjectId(req.params.id); }
-  catch { return res.status(400).json({ error: "invalid id" }); }
+  try {
+    _id = new ObjectId(req.params.id);
+  } catch {
+    return res.status(400).json({ error: "invalid id" });
+  }
 
   const db = getDb();
   const claim = await db.collection("claims").findOne({ _id });
@@ -110,7 +125,9 @@ router.patch("/:id/reject", requireLogin, async (req, res) => {
   if (claim.foundItemOwnerId !== req.user.userId)
     return res.status(403).json({ error: "forbidden" });
 
-  await db.collection("claims").updateOne({ _id }, { $set: { status: "rejected" } });
+  await db
+    .collection("claims")
+    .updateOne({ _id }, { $set: { status: "rejected" } });
   return res.json({ ok: true });
 });
 

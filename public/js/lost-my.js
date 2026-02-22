@@ -1,7 +1,7 @@
 // My lost items list
 import { playSuccess, playError } from "/js/sound.js";
 
-const msg     = document.getElementById("msg");
+const msg = document.getElementById("msg");
 const listDiv = document.getElementById("list");
 
 function showMsg(text, ok) {
@@ -16,8 +16,10 @@ function hideMsg() {
 
 function escapeHtml(s) {
   return String(s)
-    .replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;").replaceAll('"', "&quot;")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
 
@@ -57,13 +59,16 @@ async function loadMyItems() {
 }
 
 function applyFilters() {
-  const term = (document.getElementById("lostSearch")?.value || "").toLowerCase();
-  const cat  = document.getElementById("filterCategory")?.value || "";
-  const loc  = document.getElementById("filterLocation")?.value || "";
+  const term = (
+    document.getElementById("lostSearch")?.value || ""
+  ).toLowerCase();
+  const cat = document.getElementById("filterCategory")?.value || "";
+  const loc = document.getElementById("filterLocation")?.value || "";
   const date = document.getElementById("filterDate")?.value || "";
 
-  const filtered = allLostItems.filter(item => {
-    const matchSearch = !term ||
+  const filtered = allLostItems.filter((item) => {
+    const matchSearch =
+      !term ||
       item.title.toLowerCase().includes(term) ||
       item.description.toLowerCase().includes(term);
     const matchCat = !cat || item.category === cat;
@@ -87,12 +92,13 @@ function renderItems(items) {
 
   hideMsg();
 
-  listDiv.innerHTML = items.map((it) => {
-    const statusText = it.resolved ? "RESOLVED" : "OPEN";
-    const imgUrl = (it.image || "").trim();
+  listDiv.innerHTML = items
+    .map((it) => {
+      const statusText = it.resolved ? "RESOLVED" : "OPEN";
+      const imgUrl = (it.image || "").trim();
 
-    const imageBlock = imgUrl
-      ? `<div class="muted" style="margin-top: 6px;">
+      const imageBlock = imgUrl
+        ? `<div class="muted" style="margin-top: 6px;">
            <div><b>Image Link:</b> <a href="${escapeAttr(imgUrl)}" target="_blank">${escapeHtml(imgUrl)}</a></div>
            <div style="margin-top: 8px;">
              <img src="${escapeAttr(imgUrl)}" alt="Lost item image"
@@ -103,9 +109,9 @@ function renderItems(items) {
              </div>
            </div>
          </div>`
-      : `<div class="muted" style="margin-top: 6px;"><b>Image:</b> No image</div>`;
+        : `<div class="muted" style="margin-top: 6px;"><b>Image:</b> No image</div>`;
 
-    return `
+      return `
       <div class="card" style="margin-bottom: 12px;" data-id="${it._id}">
         <div class="card-body">
           <div class="row">
@@ -131,7 +137,8 @@ function renderItems(items) {
           </div>
         </div>
       </div>`;
-  }).join("");
+    })
+    .join("");
 
   listDiv.querySelectorAll(".editBtn").forEach((btn) => {
     btn.addEventListener("click", (e) => {
@@ -144,7 +151,10 @@ function renderItems(items) {
     btn.addEventListener("click", async (e) => {
       const id = e.target.closest("div[data-id]").dataset.id;
       const ok = await deleteItem(id);
-      if (ok) { playSuccess(); await loadMyItems(); }
+      if (ok) {
+        playSuccess();
+        await loadMyItems();
+      }
     });
   });
 
@@ -152,7 +162,10 @@ function renderItems(items) {
     btn.addEventListener("click", async (e) => {
       const id = e.target.closest("div[data-id]").dataset.id;
       const ok = await resolveItem(id);
-      if (ok) { playSuccess(); await loadMyItems(); }
+      if (ok) {
+        playSuccess();
+        await loadMyItems();
+      }
     });
   });
 }
@@ -162,27 +175,41 @@ async function deleteItem(id) {
     const resp = await fetch(`/api/lost-items/${id}`, { method: "DELETE" });
     const data = await resp.json();
     if (resp.ok) return true;
-    playError(); showMsg(data.error || "Delete failed", false); return false;
+    playError();
+    showMsg(data.error || "Delete failed", false);
+    return false;
   } catch {
-    playError(); showMsg("Network error", false); return false;
+    playError();
+    showMsg("Network error", false);
+    return false;
   }
 }
 
 async function resolveItem(id) {
   try {
-    const resp = await fetch(`/api/lost-items/${id}/resolve`, { method: "PATCH" });
+    const resp = await fetch(`/api/lost-items/${id}/resolve`, {
+      method: "PATCH",
+    });
     const data = await resp.json();
     if (resp.ok) return true;
-    playError(); showMsg(data.error || "Resolve failed", false); return false;
+    playError();
+    showMsg(data.error || "Resolve failed", false);
+    return false;
   } catch {
-    playError(); showMsg("Network error", false); return false;
+    playError();
+    showMsg("Network error", false);
+    return false;
   }
 }
 
 // Filter listeners
 document.getElementById("lostSearch")?.addEventListener("input", applyFilters);
-document.getElementById("filterCategory")?.addEventListener("change", applyFilters);
-document.getElementById("filterLocation")?.addEventListener("change", applyFilters);
+document
+  .getElementById("filterCategory")
+  ?.addEventListener("change", applyFilters);
+document
+  .getElementById("filterLocation")
+  ?.addEventListener("change", applyFilters);
 document.getElementById("filterDate")?.addEventListener("change", applyFilters);
 document.getElementById("clearFilters")?.addEventListener("click", () => {
   document.getElementById("lostSearch").value = "";

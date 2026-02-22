@@ -8,7 +8,6 @@ import foundItemsRoutes from "./routes/foundItems.js";
 import adminRoutes from "./routes/admin.js";
 import claimsRouter from "./routes/claims.js";
 
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -49,11 +48,3 @@ async function start() {
 }
 
 start();
-
-
-
-
-
-
-
-

@@ -1,7 +1,7 @@
 // My found items list
 import { playSuccess, playError } from "/js/sound.js";
 
-const msg     = document.getElementById("msg");
+const msg = document.getElementById("msg");
 const listDiv = document.getElementById("list");
 
 function showMsg(text, ok) {
@@ -16,8 +16,10 @@ function hideMsg() {
 
 function escapeHtml(s) {
   return String(s)
-    .replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;").replaceAll('"', "&quot;")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
 
@@ -57,17 +59,20 @@ async function loadMyItems() {
 }
 
 function applyFilters() {
-  const term = (document.getElementById("foundSearch")?.value || "").toLowerCase();
-  const cat  = document.getElementById("filterCategory")?.value || "";
-  const loc  = document.getElementById("filterLocation")?.value || "";
+  const term = (
+    document.getElementById("foundSearch")?.value || ""
+  ).toLowerCase();
+  const cat = document.getElementById("filterCategory")?.value || "";
+  const loc = document.getElementById("filterLocation")?.value || "";
   const date = document.getElementById("filterDate")?.value || "";
 
-  const filtered = allFoundItems.filter(item => {
-    const matchSearch = !term ||
+  const filtered = allFoundItems.filter((item) => {
+    const matchSearch =
+      !term ||
       item.title.toLowerCase().includes(term) ||
       item.description.toLowerCase().includes(term);
-    const matchCat  = !cat  || item.category === cat;
-    const matchLoc  = !loc  || item.location  === loc;
+    const matchCat = !cat || item.category === cat;
+    const matchLoc = !loc || item.location === loc;
     let matchDate = true;
     if (date) {
       const [y, m, d] = date.split("-");
@@ -87,11 +92,12 @@ function renderItems(items) {
 
   hideMsg();
 
-  listDiv.innerHTML = items.map(it => {
-    const statusText = it.claimed ? "CLAIMED" : "OPEN";
-    const imgUrl = (it.image || "").trim();
-    const imageBlock = imgUrl
-      ? `<div class="muted" style="margin-top:6px;">
+  listDiv.innerHTML = items
+    .map((it) => {
+      const statusText = it.claimed ? "CLAIMED" : "OPEN";
+      const imgUrl = (it.image || "").trim();
+      const imageBlock = imgUrl
+        ? `<div class="muted" style="margin-top:6px;">
            <div><b>Image Link:</b> <a href="${escapeAttr(imgUrl)}" target="_blank">${escapeHtml(imgUrl)}</a></div>
            <div style="margin-top:8px;">
              <img src="${escapeAttr(imgUrl)}" alt="Found item image"
@@ -99,9 +105,9 @@ function renderItems(items) {
                onerror="this.style.display='none';" />
            </div>
          </div>`
-      : `<div class="muted" style="margin-top:6px;"><b>Image:</b> No image</div>`;
+        : `<div class="muted" style="margin-top:6px;"><b>Image:</b> No image</div>`;
 
-    return `
+      return `
       <div class="card" style="margin-bottom:12px;" data-id="${it._id}">
         <div class="card-body">
           <div class="row">
@@ -127,31 +133,38 @@ function renderItems(items) {
           </div>
         </div>
       </div>`;
-  }).join("");
+    })
+    .join("");
 
   // Edit
-  listDiv.querySelectorAll(".editBtn").forEach(btn => {
-    btn.addEventListener("click", e => {
+  listDiv.querySelectorAll(".editBtn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
       const id = e.target.closest("div[data-id]").dataset.id;
       window.location.href = `/found-edit.html?id=${encodeURIComponent(id)}`;
     });
   });
 
   // Delete
-  listDiv.querySelectorAll(".deleteBtn").forEach(btn => {
-    btn.addEventListener("click", async e => {
+  listDiv.querySelectorAll(".deleteBtn").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
       const id = e.target.closest("div[data-id]").dataset.id;
       const ok = await deleteItem(id);
-      if (ok) { playSuccess(); await loadMyItems(); }
+      if (ok) {
+        playSuccess();
+        await loadMyItems();
+      }
     });
   });
 
   // Mark Claimed
-  listDiv.querySelectorAll(".markClaimedBtn").forEach(btn => {
-    btn.addEventListener("click", async e => {
+  listDiv.querySelectorAll(".markClaimedBtn").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
       const id = e.target.closest("div[data-id]").dataset.id;
       const ok = await markClaimed(id);
-      if (ok) { playSuccess(); await loadMyItems(); }
+      if (ok) {
+        playSuccess();
+        await loadMyItems();
+      }
     });
   });
 }
@@ -161,27 +174,41 @@ async function deleteItem(id) {
     const resp = await fetch(`/api/found-items/${id}`, { method: "DELETE" });
     const data = await resp.json();
     if (resp.ok) return true;
-    playError(); showMsg(data.error || "Delete failed", false); return false;
+    playError();
+    showMsg(data.error || "Delete failed", false);
+    return false;
   } catch {
-    playError(); showMsg("Network error", false); return false;
+    playError();
+    showMsg("Network error", false);
+    return false;
   }
 }
 
 async function markClaimed(id) {
   try {
-    const resp = await fetch(`/api/found-items/${id}/claim`, { method: "PATCH" });
+    const resp = await fetch(`/api/found-items/${id}/claim`, {
+      method: "PATCH",
+    });
     const data = await resp.json();
     if (resp.ok) return true;
-    playError(); showMsg(data.error || "Failed to mark claimed", false); return false;
+    playError();
+    showMsg(data.error || "Failed to mark claimed", false);
+    return false;
   } catch {
-    playError(); showMsg("Network error", false); return false;
+    playError();
+    showMsg("Network error", false);
+    return false;
   }
 }
 
 // Filter listeners
 document.getElementById("foundSearch")?.addEventListener("input", applyFilters);
-document.getElementById("filterCategory")?.addEventListener("change", applyFilters);
-document.getElementById("filterLocation")?.addEventListener("change", applyFilters);
+document
+  .getElementById("filterCategory")
+  ?.addEventListener("change", applyFilters);
+document
+  .getElementById("filterLocation")
+  ?.addEventListener("change", applyFilters);
 document.getElementById("filterDate")?.addEventListener("change", applyFilters);
 document.getElementById("clearFilters")?.addEventListener("click", () => {
   document.getElementById("foundSearch").value = "";
