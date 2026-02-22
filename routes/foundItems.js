@@ -29,7 +29,6 @@ router.post("/", requireLogin, async (req, res) => {
 /**
  * GET /api/found-items
  * Public list of all found items (no login required)
- * NOTE: must be before /mine so Express doesn't swallow it
  */
 router.get("/", async (req, res) => {
   const db = getDb();
@@ -51,6 +50,75 @@ router.get("/mine", requireLogin, async (req, res) => {
     .sort({ createdAt: -1 })
     .toArray();
   return res.json({ ok: true, items });
+});
+
+/**
+ * GET /api/found-items/:id
+ * Get one item (must be mine)
+ */
+router.get("/:id", requireLogin, async (req, res) => {
+  let _id;
+  try { _id = new ObjectId(req.params.id); }
+  catch { return res.status(400).json({ error: "invalid id" }); }
+  const db = getDb();
+  const item = await db.collection("found_items").findOne({ _id });
+  if (!item) return res.status(404).json({ error: "not found" });
+  if (item.ownerUserId !== req.user.userId) return res.status(403).json({ error: "forbidden" });
+  return res.json({ ok: true, item });
+});
+
+/**
+ * PUT /api/found-items/:id
+ * Edit my found item
+ */
+router.put("/:id", requireLogin, async (req, res) => {
+  const { title, description, category, location, date, image } = req.body;
+  if (!title || !description || !category || !location || !date) {
+    return res.status(400).json({ error: "missing required fields" });
+  }
+  let _id;
+  try { _id = new ObjectId(req.params.id); }
+  catch { return res.status(400).json({ error: "invalid id" }); }
+  const db = getDb();
+  const item = await db.collection("found_items").findOne({ _id });
+  if (!item) return res.status(404).json({ error: "not found" });
+  if (item.ownerUserId !== req.user.userId) return res.status(403).json({ error: "forbidden" });
+  await db.collection("found_items").updateOne({ _id }, {
+    $set: { title, description, category, location, date, image: image || "" }
+  });
+  return res.json({ ok: true });
+});
+
+/**
+ * DELETE /api/found-items/:id
+ * Delete my found item
+ */
+router.delete("/:id", requireLogin, async (req, res) => {
+  let _id;
+  try { _id = new ObjectId(req.params.id); }
+  catch { return res.status(400).json({ error: "invalid id" }); }
+  const db = getDb();
+  const item = await db.collection("found_items").findOne({ _id });
+  if (!item) return res.status(404).json({ error: "not found" });
+  if (item.ownerUserId !== req.user.userId) return res.status(403).json({ error: "forbidden" });
+  await db.collection("found_items").deleteOne({ _id });
+  return res.json({ ok: true });
+});
+
+/**
+ * PATCH /api/found-items/:id/claim
+ * Mark item as claimed
+ */
+router.patch("/:id/claim", requireLogin, async (req, res) => {
+  let _id;
+  try { _id = new ObjectId(req.params.id); }
+  catch { return res.status(400).json({ error: "invalid id" }); }
+  const db = getDb();
+  const item = await db.collection("found_items").findOne({ _id });
+  if (!item) return res.status(404).json({ error: "not found" });
+  if (item.ownerUserId !== req.user.userId) return res.status(403).json({ error: "forbidden" });
+  await db.collection("found_items").updateOne({ _id }, { $set: { claimed: true } });
+  return res.json({ ok: true });
 });
 
 export default router;
