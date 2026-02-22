@@ -43,4 +43,4 @@ Lost & Found Tracker is a web app for reporting and finding lost items on campus
 ![Screenshot](./images/design_edit_lost.png)
 
 ### My lost items page
-![Screenshot](./images/design_my_lost.png)
+![Screenshot](./images/design_mylost_myfound.png)
