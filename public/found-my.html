@@ -7,19 +7,23 @@
     <link rel="stylesheet" href="/css/base.css" />
     <style>
       #foundSearch {
-        width: 100%;
-        padding: 6px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        margin-top: 12px;
-        margin-bottom: 12px;
+        width: 100%; padding: 6px; border: 1px solid #ccc;
+        border-radius: 4px; margin-top: 12px; margin-bottom: 8px;
+      }
+      .filter-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+      .filter-row select {
+        flex: 1; min-width: 120px; padding: 6px;
+        border: 1px solid #ccc; border-radius: 4px; font-size: 14px;
+      }
+      .filter-row button {
+        padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px;
+        background: white; cursor: pointer; font-size: 14px;
       }
     </style>
   </head>
   <body>
-    <div class="container">
+    <div class="container" role="main">
       <div id="nav"></div>
-
       <div class="card" style="margin-top: 14px">
         <div class="card-body">
           <div class="row">
@@ -27,93 +31,32 @@
             <div class="spacer"></div>
             <a class="btn btn-primary" href="/found-new.html">Submit New</a>
           </div>
-
-          <!-- Search Bar -->
-          <input type="text" id="foundSearch" placeholder="Search found items..." />
-
+          <input type="text" id="foundSearch" placeholder="Search found items..." aria-label="Search found items" />
+          <div class="filter-row">
+            <select id="filterCategory" aria-label="Filter by category">
+              <option value="">All Categories</option>
+              <option>Electronics</option><option>ID / Card</option><option>Keys</option>
+              <option>Wallet</option><option>Clothing</option><option>Books / Notes</option>
+              <option>Accessories / Jewelry</option><option>Bag / Backpack</option>
+              <option>Water Bottle</option><option>Other</option>
+            </select>
+            <select id="filterLocation" aria-label="Filter by location">
+              <option value="">All Locations</option>
+              <option>Library</option><option>Classroom</option><option>Lecture Hall</option>
+              <option>Cafeteria</option><option>Gym</option><option>Dormitory</option>
+              <option>Student Center</option><option>Parking Lot</option>
+              <option>Bus Stop</option><option>Outdoor / Courtyard</option><option>Other</option>
+            </select>
+            <input type="date" id="filterDate" aria-label="Filter by date"
+              style="flex:1; min-width:120px; padding:6px; border:1px solid #ccc; border-radius:4px; font-size:14px;" />
+            <button id="clearFilters">Clear</button>
+          </div>
           <div id="msg" class="alert" style="display: none"></div>
           <div id="list" style="margin-top: 12px"></div>
         </div>
       </div>
     </div>
-
-    <script type="module">
-      const listDiv = document.getElementById("list");
-      const msg = document.getElementById("msg");
-      const searchInput = document.getElementById("foundSearch");
-
-      let allFoundItems = [];
-
-      function showMsg(text, ok) {
-        msg.style.display = "block";
-        msg.textContent = text;
-        msg.className = ok ? "alert alert-ok" : "alert alert-err";
-      }
-
-      function escapeHtml(s) {
-        return String(s)
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
-      }
-
-      // Load My Found Items
-      async function loadItems() {
-        try {
-          const resp = await fetch("/api/found-items/mine"); // <-- correct route
-          const data = await resp.json();
-          if (!resp.ok) {
-            showMsg(data.error || "Failed to load items", false);
-            listDiv.innerHTML = "";
-            return;
-          }
-          allFoundItems = data.items;
-          renderItems(allFoundItems);
-        } catch {
-          showMsg("Network error loading items", false);
-          listDiv.innerHTML = "";
-        }
-      }
-
-      // Render Items
-      function renderItems(items) {
-        if (!items.length) {
-          listDiv.innerHTML = `<div>No found items yet.</div>`;
-          return;
-        }
-
-        listDiv.innerHTML = items
-          .map(it => `
-            <div class="card" style="margin-bottom:12px;">
-              <div class="card-body">
-                <div style="font-weight:700; font-size:16px;">${escapeHtml(it.title)}</div>
-                <div class="muted" style="margin-top:4px;">
-                  ${escapeHtml(it.category)} • ${escapeHtml(it.location)} • ${escapeHtml(it.date)}
-                </div>
-                <div style="margin-top:6px;"><b>Description:</b> ${escapeHtml(it.description)}</div>
-                ${it.image ? `<img src="${escapeHtml(it.image)}" style="max-width:280px; max-height:180px; border-radius:8px; margin-top:6px;" />` : ""}
-              </div>
-            </div>
-          `)
-          .join("");
-      }
-
-      // Live Search
-      searchInput.addEventListener("input", () => {
-        const term = searchInput.value.toLowerCase();
-        const filtered = allFoundItems.filter(item =>
-          item.title.toLowerCase().includes(term) ||
-          item.description.toLowerCase().includes(term) ||
-          item.location.toLowerCase().includes(term)
-        );
-        renderItems(filtered);
-      });
-
-      loadItems();
-    </script>
-
     <script type="module" src="/js/nav.js"></script>
+    <script type="module" src="/js/found-my.js"></script>
   </body>
 </html>

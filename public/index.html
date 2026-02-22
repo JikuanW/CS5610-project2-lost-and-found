@@ -5,32 +5,215 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lost &amp; Found Tracker</title>
     <link rel="stylesheet" href="/css/base.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font-family: 'Inter', sans-serif;
+        background: #f0f4f8;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      .hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 80px 20px 60px;
+        min-height: calc(100vh - 61px);
+      }
+
+      .hero-icon {
+        width: 64px; height: 64px;
+        background: linear-gradient(135deg, #2dd4bf, #3b82f6);
+        border-radius: 18px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 32px;
+        margin-bottom: 28px;
+        box-shadow: 0 8px 24px rgba(59,130,246,0.25);
+      }
+
+      .hero-title {
+        font-size: clamp(36px, 6vw, 56px);
+        font-weight: 800;
+        color: #2dd4bf;
+        letter-spacing: -1px;
+        margin: 0 0 12px;
+        line-height: 1.1;
+      }
+
+      .hero-sub {
+        font-size: clamp(18px, 3vw, 24px);
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: -0.5px;
+        margin: 0 0 20px;
+        text-transform: uppercase;
+      }
+
+      .hero-desc {
+        font-size: 16px;
+        color: #64748b;
+        max-width: 480px;
+        line-height: 1.6;
+        margin: 0 auto 32px;
+      }
+
+      .search-wrap {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        margin-bottom: 24px;
+      }
+      .search-wrap input {
+        width: 100%;
+        padding: 16px 20px;
+        border: 2px solid #2dd4bf;
+        border-radius: 12px;
+        font-size: 16px;
+        font-family: 'Inter', sans-serif;
+        color: #0f172a;
+        background: #fff;
+        outline: none;
+        box-shadow: 0 4px 16px rgba(45,212,191,0.15);
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .search-wrap input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 4px 20px rgba(59,130,246,0.2);
+      }
+      .search-wrap input::placeholder { color: #94a3b8; }
+
+      .stats-row {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 36px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 14px;
+        color: #475569;
+        font-weight: 500;
+      }
+      .stat-dot {
+        width: 9px; height: 9px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .cta-row {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .btn-report {
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #2dd4bf, #0ea5e9);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        text-decoration: none;
+        font-family: 'Inter', sans-serif;
+        transition: opacity 0.15s, transform 0.15s;
+        box-shadow: 0 4px 16px rgba(45,212,191,0.3);
+      }
+      .btn-report:hover { opacity: 0.9; transform: translateY(-1px); }
+
+      .btn-browse {
+        padding: 14px 28px;
+        background: #fff;
+        color: #3b82f6;
+        border: 2px solid #3b82f6;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        text-decoration: none;
+        font-family: 'Inter', sans-serif;
+        transition: background 0.15s, transform 0.15s;
+      }
+      .btn-browse:hover { background: #eff6ff; transform: translateY(-1px); }
+    </style>
   </head>
-
   <body>
-    <div class="container">
-      <div id="nav"></div>
-      <div class="card" style="margin-top: 14px">
-        <div class="card-body">
-          <h1 class="page-title">Welcome</h1>
+    <div id="nav"></div>
 
-          <!-- Short introduction -->
-          <p class="muted">
-            This web application helps you report lost or found items on campus.
-          </p>
+    <main class="hero" role="main">
+      <div class="hero-icon">📍</div>
 
-          <p class="muted">
-            You can create and manage your posts, search for items, and request
-            to claim an item after logging in.
-          </p>
+      <h1 class="hero-title">MISSING SOMETHING?</h1>
+      <div class="hero-sub">Your Campus Lost &amp; Found</div>
 
-          <!-- Enter button -->
-          <div class="row" style="margin-top: 10px">
-            <a class="btn btn-primary" href="/login.html">Enter</a>
-          </div>
+      <p class="hero-desc">
+        Report lost or found items on campus. Create and manage your posts,
+        search for items, and request to claim something after logging in.
+      </p>
+
+      <div class="search-wrap">
+        <input
+          type="text"
+          id="heroSearch"
+          placeholder="What are you looking for?"
+          aria-label="Search found items"
+        />
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-dot" style="background:#f59e0b;"></div>
+          <span id="statLost">— items waiting to be found</span>
+        </div>
+        <div class="stat-item">
+          <div class="stat-dot" style="background:#22c55e;"></div>
+          <span id="statClaimed">— happy reunions</span>
         </div>
       </div>
-    </div>
+
+      <div class="cta-row">
+        <a href="/lost-new.html" class="btn-report">Report Lost Item</a>
+        <a href="/found-browse.html" class="btn-browse">Browse Items</a>
+      </div>
+    </main>
+
+    <script type="module">
+      // Live stats from DB
+      try {
+        const resp = await fetch("/api/found-items");
+        const data = await resp.json();
+        if (resp.ok && data.items) {
+          const total   = data.items.length;
+          const claimed = data.items.filter(i => i.claimed).length;
+          document.getElementById("statLost").textContent    = `${total} items waiting to be found`;
+          document.getElementById("statClaimed").textContent = `${claimed} happy reunions`;
+        }
+      } catch { /* silent */ }
+
+      // Search → browse page
+      document.getElementById("heroSearch").addEventListener("keydown", e => {
+        if (e.key === "Enter") {
+          const q = e.target.value.trim();
+          window.location.href = q
+            ? `/found-browse.html?q=${encodeURIComponent(q)}`
+            : "/found-browse.html";
+        }
+      });
+    </script>
+
     <script type="module" src="/js/nav.js"></script>
   </body>
 </html>

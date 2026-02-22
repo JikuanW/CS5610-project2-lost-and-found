@@ -6,6 +6,7 @@ import authRouter from "./routes/auth.js";
 import lostItemsRouter from "./routes/lostItems.js";
 import foundItemsRoutes from "./routes/foundItems.js";
 import adminRoutes from "./routes/admin.js";
+import claimsRouter from "./routes/claims.js";
 
 
 const app = express();
@@ -37,6 +38,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/lost-items", lostItemsRouter);
 app.use("/api/found-items", foundItemsRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/claims", claimsRouter);
 
 // Start server after DB connected
 async function start() {
