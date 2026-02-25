@@ -66,3 +66,11 @@ http://localhost:3000
 ```bash
 node seed.js
 ```
+
+## Peer Review by Ruotian Zhang
+
+The project is very complete and runs smoothly. The data collection is accurate and well implemented.
+
+One minor improvement could be the user experience when reporting an item without being logged in. Currently, after being prompted to log in, the form progress is lost. It might be helpful to provide a reminder beforehand or preserve the entered information to improve usability.
+
+Overall, this is a very thorough and excellent submission！
