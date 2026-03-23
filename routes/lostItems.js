@@ -156,3 +156,9 @@ router.patch("/:id/resolve", requireLogin, async (req, res) => {
 });
 
 export default router;
+
+/**
+* I noticed that the lostItems and foundItems routes are pretty similar in a lot of places. 
+* Maybe some of the shared logic, like validation or ID handling, could be moved into helper functions 
+* to reduce repetition and make the code easier to maintain
+*/
